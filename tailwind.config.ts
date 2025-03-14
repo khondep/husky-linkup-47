@@ -64,12 +64,13 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				husky: {
-					red: '#CC0000',
+					red: '#ea384c',
 					black: '#000000',
+					white: '#FFFFFF',
 					light: '#F5F5F7',
 					subtle: '#F2F2F2',
-					blue: '#007AFF',
-					'blue-dark': '#0056B3',
+					blue: '#000000', // Changed to black
+					'blue-dark': '#000000', // Changed to black
 					gray: '#86868B',
 					'gray-light': '#E5E5E5',
 					'gray-dark': '#424245'

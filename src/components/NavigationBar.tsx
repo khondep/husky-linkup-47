@@ -13,7 +13,7 @@ const NavigationBar: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-10 mx-auto flex max-w-md items-center justify-around border-t border-husky-gray-light bg-white/80 px-6 pb-6 pt-3 backdrop-blur-md">
+    <nav className="fixed bottom-0 left-0 right-0 z-10 mx-auto flex max-w-md items-center justify-around border-t border-husky-gray-light bg-husky-white/80 px-6 pb-6 pt-3 backdrop-blur-md">
       {navItems.map((item) => (
         <NavLink
           key={item.to}
@@ -21,7 +21,7 @@ const NavigationBar: React.FC = () => {
           className={({ isActive }) => cn(
             'flex flex-col items-center rounded-xl px-4 py-1.5 transition-all duration-200',
             isActive
-              ? 'text-husky-blue'
+              ? 'text-husky-red'
               : 'text-husky-gray hover:text-husky-gray-dark'
           )}
         >

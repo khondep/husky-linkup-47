@@ -29,7 +29,7 @@ const MessagePreview: React.FC<MessagePreviewProps> = ({
       onClick={onClick}
       className={cn(
         'flex w-full items-center gap-4 rounded-2xl p-4 text-left transition-all duration-200',
-        active ? 'bg-husky-blue/10' : 'hover:bg-husky-subtle',
+        active ? 'bg-husky-red/10' : 'hover:bg-husky-subtle',
         className
       )}
     >
@@ -71,7 +71,7 @@ const MessagePreview: React.FC<MessagePreviewProps> = ({
       </div>
       
       {message.unread && (
-        <div className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-husky-blue" />
+        <div className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-husky-red" />
       )}
     </button>
   );

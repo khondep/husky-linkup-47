@@ -50,7 +50,7 @@ const SwipeControls: React.FC<SwipeControlsProps> = ({
           className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-subtle transition-transform hover:scale-105 active:scale-95 focus-ring"
           aria-label="Message"
         >
-          <MessageCircle className="h-5 w-5 text-husky-blue" />
+          <MessageCircle className="h-5 w-5 text-husky-red" />
         </button>
       )}
       
@@ -59,7 +59,7 @@ const SwipeControls: React.FC<SwipeControlsProps> = ({
         className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-subtle transition-transform hover:scale-105 active:scale-95 focus-ring"
         aria-label="Like"
       >
-        <Heart className="h-7 w-7 text-husky-blue" />
+        <Heart className="h-7 w-7 text-husky-red" />
       </button>
     </div>
   );

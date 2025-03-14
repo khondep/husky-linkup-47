@@ -69,7 +69,7 @@ const Logo: React.FC<LogoProps> = ({
             Husky
           </span>
           <span className={cn(
-            'font-light text-husky-blue leading-none',
+            'font-light text-husky-red leading-none',
             size === 'sm' ? 'text-xs' : size === 'md' ? 'text-lg' : 'text-xl'
           )}>
             Match

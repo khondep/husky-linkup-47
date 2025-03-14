@@ -26,11 +26,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ...props 
   }, ref) => {
     const variants = {
-      primary: 'bg-husky-blue text-white hover:bg-husky-blue-dark active:bg-husky-blue-dark/90',
+      primary: 'bg-husky-red text-husky-white hover:bg-husky-red/90 active:bg-husky-red/90',
       secondary: 'bg-husky-subtle text-husky-black hover:bg-husky-gray-light active:bg-husky-gray-light/90',
       outline: 'border border-husky-gray-light bg-transparent text-husky-black hover:bg-husky-subtle active:bg-husky-subtle/90',
       ghost: 'bg-transparent text-husky-black hover:bg-husky-subtle active:bg-husky-subtle/90',
-      link: 'bg-transparent text-husky-blue hover:underline active:text-husky-blue-dark p-0 h-auto'
+      link: 'bg-transparent text-husky-red hover:underline active:text-husky-red p-0 h-auto'
     };
 
     const sizes = {
@@ -56,7 +56,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="h-5 w-5 animate-spin rounded-full border-2 border-husky-blue border-t-transparent" />
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-husky-red border-t-transparent" />
           </div>
         )}
         <div className={cn('flex items-center gap-2', isLoading ? 'opacity-0' : '')}>
