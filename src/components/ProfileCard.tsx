@@ -1,7 +1,13 @@
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { GraduationCap, MapPin, Briefcase, Heart } from 'lucide-react';
+import { GraduationCap, MapPin, Briefcase, Heart, ChevronUp } from 'lucide-react';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 interface ProfileCardProps {
   profile: {
@@ -19,7 +25,14 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
-  const [imageLoaded, setImageLoaded] = React.useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Function to toggle profile details
+  const toggleDetails = () => {
+    setShowDetails(!showDetails);
+  };
 
   return (
     <div 
@@ -27,77 +40,101 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
         'relative flex flex-col overflow-hidden rounded-3xl bg-white shadow-medium transition-all duration-300 h-[70vh] max-h-[600px]',
         className
       )}
+      ref={cardRef}
     >
-      <div className="relative h-3/5 w-full overflow-hidden">
-        {!imageLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-husky-subtle animate-pulse">
-            <span className="sr-only">Loading</span>
-          </div>
-        )}
-        <img
-          src={profile.image}
-          alt={profile.name}
-          className={cn(
-            'h-full w-full object-cover transition-opacity duration-500',
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          )}
-          onLoad={() => setImageLoaded(true)}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50" />
-        
-        <div className="absolute bottom-0 left-0 p-6 text-white">
-          <div className="flex items-end gap-3">
-            <h2 className="text-3xl font-bold">{profile.name}</h2>
-            {profile.age && (
-              <span className="text-xl font-medium">{profile.age}</span>
+      <Drawer>
+        <DrawerTrigger className="w-full h-full">
+          <div className="relative h-full w-full overflow-hidden">
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-husky-subtle animate-pulse">
+                <span className="sr-only">Loading</span>
+              </div>
             )}
-          </div>
-          
-          {profile.location && (
-            <div className="mt-1 flex items-center">
-              <MapPin className="mr-1 h-4 w-4" />
-              <span className="text-sm">{profile.location}</span>
+            <img
+              src={profile.image}
+              alt={profile.name}
+              className={cn(
+                'h-full w-full object-cover transition-opacity duration-500',
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              )}
+              onLoad={() => setImageLoaded(true)}
+            />
+            
+            {/* Name and location overlay at the bottom */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-gradient-to-t from-black/80 to-transparent">
+              <div className="flex items-end justify-between">
+                <div>
+                  <h2 className="text-3xl font-bold">{profile.name}</h2>
+                  {profile.location && (
+                    <div className="mt-1 flex items-center">
+                      <MapPin className="mr-1 h-4 w-4" />
+                      <span className="text-sm">{profile.location}</span>
+                    </div>
+                  )}
+                </div>
+                <ChevronUp className="h-6 w-6 text-white animate-bounce" />
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-      
-      <div className="flex flex-col justify-between p-6 h-2/5">
-        <div className="space-y-4">
-          <p className="text-husky-black/80 line-clamp-3">{profile.bio}</p>
-          
-          <div className="flex flex-wrap gap-2">
-            {profile.interests?.map((interest, index) => (
-              <span 
-                key={index} 
-                className="inline-flex items-center rounded-full bg-husky-subtle px-3 py-1 text-xs font-medium text-husky-black"
-              >
-                {interest}
-              </span>
-            ))}
           </div>
-        </div>
+        </DrawerTrigger>
         
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          {profile.education && (
-            <div className="flex items-center text-sm text-husky-gray-dark">
-              <GraduationCap className="mr-2 h-4 w-4 text-husky-blue" />
-              <span className="truncate">{profile.education}</span>
+        <DrawerContent className="bg-white p-6 rounded-t-3xl">
+          <div className="space-y-6 max-w-md mx-auto">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-husky-black">{profile.name}</h2>
+                {profile.age && <span className="text-lg text-husky-gray-dark ml-2">{profile.age}</span>}
+              </div>
+              {profile.location && (
+                <div className="flex items-center text-husky-gray-dark">
+                  <MapPin className="mr-1 h-4 w-4" />
+                  <span className="text-sm">{profile.location}</span>
+                </div>
+              )}
             </div>
-          )}
-          
-          {profile.occupation && (
-            <div className="flex items-center text-sm text-husky-gray-dark">
-              <Briefcase className="mr-2 h-4 w-4 text-husky-blue" />
-              <span className="truncate">{profile.occupation}</span>
+            
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium text-husky-black">About</h3>
+              <p className="text-husky-black/80">{profile.bio}</p>
+              
+              <h3 className="text-lg font-medium text-husky-black">Interests</h3>
+              <div className="flex flex-wrap gap-2">
+                {profile.interests?.map((interest, index) => (
+                  <span 
+                    key={index} 
+                    className="inline-flex items-center rounded-full bg-husky-subtle px-3 py-1 text-xs font-medium text-husky-black"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                {profile.education && (
+                  <div className="flex items-center text-sm text-husky-gray-dark">
+                    <GraduationCap className="mr-2 h-5 w-5 text-husky-red" />
+                    <span>{profile.education}</span>
+                  </div>
+                )}
+                
+                {profile.occupation && (
+                  <div className="flex items-center text-sm text-husky-gray-dark">
+                    <Briefcase className="mr-2 h-5 w-5 text-husky-red" />
+                    <span>{profile.occupation}</span>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
       
       <button 
-        className="absolute right-4 top-4 rounded-full bg-white/20 backdrop-blur-sm p-2 transition-transform hover:scale-110 active:scale-95"
+        className="absolute right-4 top-4 rounded-full bg-white/20 backdrop-blur-sm p-2 transition-transform hover:scale-110 active:scale-95 z-10"
         aria-label="Like profile"
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent drawer from opening
+        }}
       >
         <Heart className="h-6 w-6 text-white" />
       </button>
