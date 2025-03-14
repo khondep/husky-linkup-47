@@ -65,12 +65,26 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
               <div className="flex items-end justify-between">
                 <div>
                   <h2 className="text-3xl font-bold">{profile.name}</h2>
-                  {profile.location && (
-                    <div className="mt-1 flex items-center">
-                      <MapPin className="mr-1 h-4 w-4" />
-                      <span className="text-sm">{profile.location}</span>
-                    </div>
-                  )}
+                  <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                    {profile.location && (
+                      <div className="flex items-center">
+                        <MapPin className="mr-1 h-4 w-4" />
+                        <span className="text-sm">{profile.location}</span>
+                      </div>
+                    )}
+                    {profile.education && (
+                      <div className="flex items-center">
+                        <GraduationCap className="mr-1 h-4 w-4" />
+                        <span className="text-sm">{profile.education}</span>
+                      </div>
+                    )}
+                    {profile.occupation && (
+                      <div className="flex items-center">
+                        <Briefcase className="mr-1 h-4 w-4" />
+                        <span className="text-sm">{profile.occupation}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <ChevronUp className="h-6 w-6 text-white animate-bounce" />
               </div>
