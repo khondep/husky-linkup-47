@@ -62,30 +62,30 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
             
             {/* Name and location overlay at the bottom */}
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-gradient-to-t from-black/80 to-transparent">
-              <div className="flex items-end justify-between">
-                <div>
-                  <h2 className="text-3xl font-bold">{profile.name}</h2>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
-                    {profile.location && (
-                      <div className="flex items-center">
-                        <MapPin className="mr-1 h-4 w-4" />
-                        <span className="text-sm">{profile.location}</span>
-                      </div>
-                    )}
-                    {profile.education && (
-                      <div className="flex items-center">
-                        <GraduationCap className="mr-1 h-4 w-4" />
-                        <span className="text-sm">{profile.education}</span>
-                      </div>
-                    )}
-                    {profile.occupation && (
-                      <div className="flex items-center">
-                        <Briefcase className="mr-1 h-4 w-4" />
-                        <span className="text-sm">{profile.occupation}</span>
-                      </div>
-                    )}
-                  </div>
+              <div>
+                <h2 className="text-3xl font-bold text-left">{profile.name}</h2>
+                <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                  {profile.location && (
+                    <div className="flex items-center">
+                      <MapPin className="mr-1 h-4 w-4" />
+                      <span className="text-sm">{profile.location}</span>
+                    </div>
+                  )}
+                  {profile.education && (
+                    <div className="flex items-center">
+                      <GraduationCap className="mr-1 h-4 w-4" />
+                      <span className="text-sm">{profile.education}</span>
+                    </div>
+                  )}
+                  {profile.occupation && (
+                    <div className="flex items-center">
+                      <Briefcase className="mr-1 h-4 w-4" />
+                      <span className="text-sm">{profile.occupation}</span>
+                    </div>
+                  )}
                 </div>
+              </div>
+              <div className="flex justify-center mt-2">
                 <ChevronUp className="h-6 w-6 text-white animate-bounce" />
               </div>
             </div>
