@@ -1,8 +1,7 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import { Button } from '@/components/ui/button';
-import { Edit2, GraduationCap, Briefcase, MapPin, Settings, ArrowRight } from 'lucide-react';
+import { Edit2, GraduationCap, Briefcase, MapPin, Settings, ArrowRight, Users, MessageSquare } from 'lucide-react';
 
 // Sample user data
 const userData = {

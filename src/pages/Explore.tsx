@@ -1,7 +1,6 @@
-
 import React from 'react';
 import NavigationBar from '@/components/NavigationBar';
-import { Calendar, Award, Coffee, Users, Book, Zap, Globe, Music } from 'lucide-react';
+import { Calendar, Award, Coffee, Users, Book, Zap, Globe, Music, Briefcase } from 'lucide-react';
 
 // Sample data
 const exploreCategories = [
