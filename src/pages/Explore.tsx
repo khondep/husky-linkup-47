@@ -1,8 +1,10 @@
+
 import React from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import { Calendar, Award, Coffee, Users, Book, Zap, Globe, Music, Briefcase } from 'lucide-react';
+import Logo from '@/components/Logo';
 
-// Sample data
+// Sample data - removed job opportunities section
 const exploreCategories = [
   {
     id: 'clubs',
@@ -26,18 +28,6 @@ const exploreCategories = [
       { name: 'AI Workshop', date: 'May 22', image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=60' },
       { name: 'Startup Weekend', date: 'Jun 5-7', image: 'https://images.unsplash.com/photo-1582213782179-e0d4d3cce817?w=800&auto=format&fit=crop&q=60' },
       { name: 'Hackathon 2023', date: 'Jun 12', image: 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=800&auto=format&fit=crop&q=60' },
-    ]
-  },
-  {
-    id: 'opportunities',
-    title: 'Job Opportunities',
-    icon: Briefcase,
-    color: 'bg-green-500',
-    items: [
-      { name: 'Software Engineer Intern', company: 'Google', image: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=800&auto=format&fit=crop&q=60' },
-      { name: 'Data Analyst', company: 'Amazon', image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=60' },
-      { name: 'UX Designer', company: 'Microsoft', image: 'https://images.unsplash.com/photo-1651347395867-7dd7ffd3172f?w=800&auto=format&fit=crop&q=60' },
-      { name: 'Product Manager', company: 'Airbnb', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&auto=format&fit=crop&q=60' },
     ]
   },
   {
@@ -71,7 +61,14 @@ const Explore = () => {
   return (
     <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
-        <h1 className="text-2xl font-semibold text-husky-black">Explore</h1>
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/husky-logo.png" 
+            alt="Husky Match" 
+            className="h-8 w-8 mr-2"
+          />
+          <h1 className="text-2xl font-semibold text-husky-black">Explore</h1>
+        </div>
       </header>
       
       <main className="flex-1 p-6 pb-24">
@@ -102,8 +99,7 @@ const Explore = () => {
                       <h3 className="font-medium text-husky-black text-sm">{item.name}</h3>
                       <p className="text-xs text-husky-gray-dark mt-0.5">
                         {'members' in item ? `${item.members} members` : 
-                         'date' in item ? item.date : 
-                         'company' in item ? item.company : ''}
+                         'date' in item ? item.date : ''}
                       </p>
                     </div>
                   </div>
