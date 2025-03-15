@@ -2,14 +2,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Home, MessageSquare, User, Settings } from 'lucide-react';
+import { Home, MessageSquare, Users, Compass, User } from 'lucide-react';
 
 const NavigationBar: React.FC = () => {
   const navItems = [
     { to: '/home', icon: Home, label: 'Match' },
+    { to: '/explore', icon: Compass, label: 'Explore' },
+    { to: '/connections', icon: Users, label: 'Connections' },
     { to: '/messages', icon: MessageSquare, label: 'Messages' },
     { to: '/profile', icon: User, label: 'Profile' },
-    { to: '/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (

@@ -13,7 +13,8 @@ import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
+import Explore from "./pages/Explore";
+import Connections from "./pages/Connections";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,7 +33,8 @@ const App = () => (
             <Route path="/home" element={<Home />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/connections" element={<Connections />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatedTransition>

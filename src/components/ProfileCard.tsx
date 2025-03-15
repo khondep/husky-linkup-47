@@ -1,8 +1,7 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { GraduationCap, MapPin, Briefcase, Heart, ChevronUp } from 'lucide-react';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { GraduationCap, MapPin, Briefcase, ThumbsUp, ThumbsDown, ChevronUp } from 'lucide-react';
 import {
   Drawer,
   DrawerContent,
@@ -20,19 +19,14 @@ interface ProfileCardProps {
     education?: string;
     occupation?: string;
     interests?: string[];
+    matchPercentage?: number;
   };
   className?: string;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-
-  // Function to toggle profile details
-  const toggleDetails = () => {
-    setShowDetails(!showDetails);
-  };
 
   return (
     <div 
@@ -59,6 +53,13 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
               )}
               onLoad={() => setImageLoaded(true)}
             />
+            
+            {/* Match percentage at the top */}
+            {profile.matchPercentage && (
+              <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm text-husky-red font-bold rounded-full px-3 py-1 text-sm">
+                {profile.matchPercentage}% Match
+              </div>
+            )}
             
             {/* Name and location overlay at the bottom */}
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-gradient-to-t from-black/80 to-transparent">
@@ -142,16 +143,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
           </div>
         </DrawerContent>
       </Drawer>
-      
-      <button 
-        className="absolute right-4 top-4 rounded-full bg-white/20 backdrop-blur-sm p-2 transition-transform hover:scale-110 active:scale-95 z-10"
-        aria-label="Like profile"
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent drawer from opening
-        }}
-      >
-        <Heart className="h-6 w-6 text-white" />
-      </button>
     </div>
   );
 };

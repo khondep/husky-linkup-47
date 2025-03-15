@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Logo from '@/components/Logo';
 import Button from '@/components/Button';
 import { ArrowRight } from 'lucide-react';
 
@@ -28,7 +27,12 @@ const Index = () => {
       
       <div className="relative w-full max-w-lg mx-auto flex flex-col items-center text-center z-0">
         <div className={`transition-all duration-700 ease-out ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <Logo size="lg" animate />
+          <img 
+            src="/husky-icon.png" 
+            alt="Husky Match" 
+            className="h-20 w-20 mb-4"
+          />
+          <h2 className="text-2xl font-bold text-husky-black">Husky Match</h2>
         </div>
         
         <h1 className={`mt-8 text-4xl font-bold text-husky-black transition-all duration-700 delay-100 ease-out ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>

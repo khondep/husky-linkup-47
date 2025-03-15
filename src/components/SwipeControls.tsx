@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { X, Heart, MessageCircle, RotateCcw } from 'lucide-react';
+import { ThumbsDown, ThumbsUp, MessageCircle, RotateCcw } from 'lucide-react';
 
 interface SwipeControlsProps {
   onLike: () => void;
@@ -27,7 +27,7 @@ const SwipeControls: React.FC<SwipeControlsProps> = ({
         className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-subtle transition-transform hover:scale-105 active:scale-95 focus-ring"
         aria-label="Dislike"
       >
-        <X className="h-7 w-7 text-rose-500" />
+        <ThumbsDown className="h-7 w-7 text-rose-500" />
       </button>
       
       {onUndo && (
@@ -59,7 +59,7 @@ const SwipeControls: React.FC<SwipeControlsProps> = ({
         className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-subtle transition-transform hover:scale-105 active:scale-95 focus-ring"
         aria-label="Like"
       >
-        <Heart className="h-7 w-7 text-husky-red" />
+        <ThumbsUp className="h-7 w-7 text-husky-red" />
       </button>
     </div>
   );
