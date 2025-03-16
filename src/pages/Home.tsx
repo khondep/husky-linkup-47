@@ -223,7 +223,12 @@ const Home = () => {
           <span className={`text-sm transition-colors ${isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Alumni</span>
         </div>
         
-        <div className="flex items-center gap-2 object-scale-down">
+        <div className="flex items-center gap-2">
+          <img 
+            src="/lovable-uploads/husky-logo.png" 
+            alt="Husky Logo" 
+            className="h-10 w-auto"
+          />
           <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
             <DrawerTrigger asChild>
               <button className="p-2 rounded-xl bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors focus-ring" aria-label="Filter">
