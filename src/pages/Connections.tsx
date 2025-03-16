@@ -102,11 +102,8 @@ const Connections = () => {
   const skillData = prepareSkillData(connections);
   
   const handleMessageClick = (connectionId) => {
-    // Navigate to messages and open the specific conversation
-    navigate('/messages');
-    // In a real app, you would dispatch an action or use context to set the active message
-    // For now we'll just simulate this by sending the ID as a state
-    // This would be handled in the Messages component
+    // Navigate to messages with a specific connectionId parameter
+    navigate(`/messages?contactId=${connectionId}`);
   };
   
   return (
@@ -197,7 +194,10 @@ const Connections = () => {
                 <div className="ml-2">
                   <button 
                     className="p-2 rounded-full bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors"
-                    onClick={() => handleMessageClick(connection.id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent any parent onClick events
+                      handleMessageClick(connection.id);
+                    }}
                   >
                     <MessageSquare className="h-5 w-5" />
                   </button>

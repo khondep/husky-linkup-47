@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import MessagePreview from '@/components/MessagePreview';
 import { Search, Send, ArrowLeft, RefreshCw } from 'lucide-react';
@@ -6,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 
 const sampleMessages = [
@@ -107,6 +108,34 @@ const Messages = () => {
   const [refreshingIcebreaker, setRefreshingIcebreaker] = useState(false);
   const [currentIcebreaker, setCurrentIcebreaker] = useState(icebreakers[0]);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Parse the contactId from URL query parameters
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const contactId = params.get('contactId');
+    
+    if (contactId) {
+      // Check if the contactId exists in our sample messages
+      const contactExists = sampleMessages.some(msg => msg.id === contactId);
+      
+      if (contactExists) {
+        setActiveMessageId(contactId);
+        setOpenMessageDrawer(true);
+      } else {
+        // If contact doesn't exist in our messages yet, we would typically
+        // create a new conversation thread here in a real app
+        toast({
+          title: "Starting new conversation",
+          description: "Opening chat with this connection.",
+        });
+        
+        // For this demo, let's default to the first conversation if contact not found
+        setActiveMessageId(sampleMessages[0].id);
+        setOpenMessageDrawer(true);
+      }
+    }
+  }, [location.search]);
   
   const filteredMessages = sampleMessages.filter(message => 
     message.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -159,6 +188,8 @@ const Messages = () => {
   };
 
   const handleOpenMessage = (id: string) => {
+    // Update URL with the contactId parameter for better sharing and navigation
+    navigate(`/messages?contactId=${id}`, { replace: true });
     setActiveMessageId(id);
     setOpenMessageDrawer(true);
   };
@@ -166,6 +197,12 @@ const Messages = () => {
   const handleUseIcebreaker = (text: string) => {
     setMessageText(text);
     document.body.click();
+  };
+
+  const handleCloseDrawer = () => {
+    setOpenMessageDrawer(false);
+    // Remove the contactId from URL when closing the conversation
+    navigate('/messages', { replace: true });
   };
   
   return (
@@ -207,7 +244,7 @@ const Messages = () => {
           </div>
         )}
 
-        <Drawer open={openMessageDrawer} onOpenChange={setOpenMessageDrawer}>
+        <Drawer open={openMessageDrawer} onOpenChange={handleCloseDrawer}>
           <DrawerContent className="h-[90vh] p-0">
             {activeMessage && (
               <div className="flex flex-col h-full">
