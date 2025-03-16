@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import MessagePreview from '@/components/MessagePreview';
-import { Search, Send, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Search, Send, ArrowLeft, RefreshCw, MessageCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import FeedbackModal from '@/components/FeedbackModal';
 
 const sampleMessages = [
   {
@@ -107,6 +108,8 @@ const Messages = () => {
   const [refreshingIcebreaker, setRefreshingIcebreaker] = useState(false);
   const [currentIcebreaker, setCurrentIcebreaker] = useState(icebreakers[0]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackMessageCount, setFeedbackMessageCount] = useState<Record<string, number>>({});
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -152,6 +155,21 @@ const Messages = () => {
       ...prev,
       [activeMessageId]: [...(prev[activeMessageId] || []), newMessage]
     }));
+    
+    setFeedbackMessageCount(prev => {
+      const currentCount = (prev[activeMessageId] || 0) + 1;
+      
+      if (currentCount === 3) {
+        setTimeout(() => {
+          setShowFeedbackModal(true);
+        }, 1000);
+      }
+      
+      return {
+        ...prev,
+        [activeMessageId]: currentCount
+      };
+    });
     
     setMessageText('');
   };
@@ -269,6 +287,17 @@ const Messages = () => {
                       </p>
                     </div>
                   </div>
+                  <div className="ml-auto">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setShowFeedbackModal(true)}
+                      className="text-xs"
+                    >
+                      <MessageCircle className="h-3 w-3 mr-1" />
+                      Rate
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="flex-1 p-4 overflow-y-auto bg-husky-subtle/30">
@@ -355,6 +384,14 @@ const Messages = () => {
             )}
           </DrawerContent>
         </Drawer>
+        
+        {activeMessage && (
+          <FeedbackModal 
+            open={showFeedbackModal} 
+            onOpenChange={setShowFeedbackModal}
+            alumniName={activeMessage.name}
+          />
+        )}
       </main>
       
       <NavigationBar />
