@@ -214,7 +214,7 @@ const Home = () => {
 
   return <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
-        <h1 className="text-xl font-semibold text-husky-black">Husky Match</h1>
+        <div className="w-10"></div>
         
         <div className="flex items-center space-x-2 bg-husky-subtle px-3 py-1 rounded-full">
           <span className={`text-sm transition-colors ${!isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Peers</span>
