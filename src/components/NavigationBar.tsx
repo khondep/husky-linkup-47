@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Home, MessageSquare, Users, Compass, User } from 'lucide-react';
+import { Home, MessageSquare, BarChart, Compass, User } from 'lucide-react';
 
 // Sample notification data
 const initialNotifications = {
   messages: 2,
-  connections: 1,
+  analytics: 1,
   explore: 3,
   profile: 0,
   home: 0
@@ -19,7 +19,7 @@ const NavigationBar: React.FC = () => {
   const navItems = [
     { to: '/home', icon: Home, label: 'Match', key: 'home' },
     { to: '/explore', icon: Compass, label: 'Explore', key: 'explore' },
-    { to: '/connections', icon: Users, label: 'Connections', key: 'connections' },
+    { to: '/analytics', icon: BarChart, label: 'Analytics', key: 'analytics' },
     { to: '/messages', icon: MessageSquare, label: 'Messages', key: 'messages' },
     { to: '/profile', icon: User, label: 'Profile', key: 'profile' },
   ];
