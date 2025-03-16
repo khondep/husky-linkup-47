@@ -222,7 +222,6 @@ const Home = () => {
     });
     
     setFilteredProfiles(filtered);
-    // Reset to first profile when filters change
     setCurrentProfileIndex(0);
     setSwipedProfiles([]);
   }, [filters, isAlumniMode]);
@@ -260,10 +259,18 @@ const Home = () => {
   const handleNextProfile = (direction: 'left' | 'right') => {
     if (filteredProfiles.length === 0) return;
     
+    // Add the current profile to swiped profiles
     setSwipedProfiles([...swipedProfiles, currentProfile.id]);
-    setCurrentProfileIndex(currentIndex => 
-      currentIndex < filteredProfiles.length - 1 ? currentIndex + 1 : 0
-    );
+    
+    // Move to the next profile or loop back to the beginning
+    if (currentProfileIndex < filteredProfiles.length - 1) {
+      setCurrentProfileIndex(currentProfileIndex + 1);
+    } else {
+      // If we've gone through all profiles, start over
+      setCurrentProfileIndex(0);
+      setSwipedProfiles([]);
+    }
+    
     setAnimate(null);
   };
 
