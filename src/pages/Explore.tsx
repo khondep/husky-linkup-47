@@ -74,7 +74,7 @@ const exploreCategories = [
         time: 'All day',
         location: 'Business School',
         image: 'https://images.unsplash.com/photo-1582213782179-e0d4d3cce817?w=800&auto=format&fit=crop&q=60',
-        description: '54-hour event where you'll experience the highs, lows, fun, and pressure that make up life at a startup. Form teams and build a business idea from scratch.',
+        description: '54-hour event where you\'ll experience the highs, lows, fun, and pressure that make up life at a startup. Form teams and build a business idea from scratch.',
         link: '/events/startup-weekend'
       },
       { 
