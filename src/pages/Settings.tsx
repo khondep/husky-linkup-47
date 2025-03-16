@@ -2,6 +2,7 @@
 import React from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import Button from '@/components/Button';
+import { useNavigate } from 'react-router-dom';
 import { 
   Bell, 
   Lock, 
@@ -11,26 +12,30 @@ import {
   Moon, 
   Users, 
   MessageSquare,
-  Eye
+  Eye,
+  Settings as SettingsIcon
 } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 const SettingItem = ({ 
   icon, 
   label, 
   description, 
-  onClick 
+  onClick,
+  active
 }: { 
   icon: React.ReactNode; 
   label: string; 
   description?: string;
-  onClick?: () => void; 
+  onClick?: () => void;
+  active?: boolean;
 }) => (
   <button
     onClick={onClick}
-    className="flex items-center justify-between w-full p-4 text-left transition-colors hover:bg-husky-subtle rounded-xl"
+    className={`flex items-center justify-between w-full p-4 text-left transition-colors hover:bg-husky-subtle rounded-xl ${active ? 'bg-husky-subtle' : ''}`}
   >
     <div className="flex items-center">
-      <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-husky-subtle text-husky-blue mr-4">
+      <div className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full ${active ? 'bg-husky-red/10 text-husky-red' : 'bg-husky-subtle text-husky-blue'} mr-4`}>
         {icon}
       </div>
       <div>
@@ -43,10 +48,21 @@ const SettingItem = ({
 );
 
 const Settings = () => {
+  const navigate = useNavigate();
+  
+  const handleMatchingPreferences = () => {
+    // This would navigate to the matching preferences page in a real app
+    toast({
+      title: "Matching Preferences",
+      description: "Matching preferences updated successfully!",
+    });
+  };
+  
   return (
     <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
         <h1 className="text-2xl font-semibold text-husky-black">Settings</h1>
+        <SettingsIcon className="h-7 w-7 text-husky-gray-dark" />
       </header>
       
       <main className="flex-1 p-6 pb-24">
@@ -60,6 +76,7 @@ const Settings = () => {
                 icon={<Users className="h-5 w-5" />} 
                 label="Profile" 
                 description="Edit your public profile"
+                onClick={() => navigate('/profile')}
               />
               <SettingItem 
                 icon={<Bell className="h-5 w-5" />} 
@@ -83,6 +100,8 @@ const Settings = () => {
                 icon={<Eye className="h-5 w-5" />} 
                 label="Matching Preferences"
                 description="Adjust who you want to connect with"
+                onClick={handleMatchingPreferences}
+                active={true}
               />
               <SettingItem 
                 icon={<Moon className="h-5 w-5" />} 
