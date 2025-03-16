@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ProfileCard from '@/components/ProfileCard';
 import SwipeControls from '@/components/SwipeControls';
 import NavigationBar from '@/components/NavigationBar';
-import Logo from '@/components/Logo';
 import { Filter, Flag } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
@@ -224,7 +223,6 @@ const Home = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          <Logo size="sm" />
           <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
             <DrawerTrigger asChild>
               <button className="p-2 rounded-xl bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors focus-ring" aria-label="Filter">
