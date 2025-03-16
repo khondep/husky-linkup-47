@@ -301,9 +301,14 @@ const Home = () => {
           <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
             <DrawerTrigger asChild>
               <TutorialHighlight id="tutorial-filter-button">
-                <button className="p-2 rounded-xl bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors focus-ring" aria-label="Filter">
+                <Button 
+                  variant="ghost" 
+                  className="p-2 rounded-xl bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors focus-ring" 
+                  aria-label="Filter"
+                  onClick={() => setFilterOpen(true)}
+                >
                   <Filter className="h-5 w-5" />
-                </button>
+                </Button>
               </TutorialHighlight>
             </DrawerTrigger>
             <FilterMenu 
