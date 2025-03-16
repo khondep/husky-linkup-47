@@ -3,24 +3,29 @@ import React, { useState } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Legend } from 'recharts';
 import { Card } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, Users, Info } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Info, Clock, UserCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { 
+  ChartContainer, 
+  ChartTooltip, 
+  ChartTooltipContent 
+} from '@/components/ui/chart';
 
-// Sample data for profile views chart
-const profileViewsData = [
-  { date: 'Mar 17', views: 2 },
-  { date: 'Apr 15', views: 4 },
-  { date: 'May 12', views: 3 },
-  { date: 'Jun 10', views: 7 },
-  { date: 'Jul 7', views: 5 },
-  { date: 'Aug 5', views: 12 },
-  { date: 'Sep 1', views: 8 },
-  { date: 'Oct 1', views: 10 },
-  { date: 'Oct 27', views: 4 },
-  { date: 'Nov 25', views: 6 },
-  { date: 'Dec 22', views: 5 },
-  { date: 'Jan 20', views: 14 },
-  { date: 'Feb 16', views: 9 },
+// Sample data for time on app chart
+const timeOnAppData = [
+  { date: 'Mar 17', minutes: 12 },
+  { date: 'Apr 15', minutes: 24 },
+  { date: 'May 12', minutes: 18 },
+  { date: 'Jun 10', minutes: 35 },
+  { date: 'Jul 7', minutes: 22 },
+  { date: 'Aug 5', minutes: 42 },
+  { date: 'Sep 1', minutes: 28 },
+  { date: 'Oct 1', minutes: 31 },
+  { date: 'Oct 27', minutes: 19 },
+  { date: 'Nov 25', minutes: 26 },
+  { date: 'Dec 22', minutes: 24 },
+  { date: 'Jan 20', minutes: 38 },
+  { date: 'Feb 16', minutes: 29 },
 ];
 
 // Sample analytics data (adjusted for a 600-user app)
@@ -29,7 +34,9 @@ const analyticsData = {
   profileViewsChange: -5,
   connections: 42,
   connectionsChange: 3.5,
-  totalUsers: 600
+  connectionRequests: 64,
+  connectionAccepts: 42,
+  connectionSuccessRate: 65.6
 };
 
 // Profile skills for radar chart
@@ -96,23 +103,28 @@ const Analytics = () => {
       </header>
       
       <main className="flex-1 p-6 pb-24 space-y-6">
-        {/* Profile Views Card */}
+        {/* Time on App Card */}
         <Card className="p-6 space-y-4">
           <div>
-            <h2 className="text-3xl font-bold">{analyticsData.profileViews}</h2>
-            <div className="flex items-center mt-1">
-              <p className="text-sm text-muted-foreground">Profile viewers</p>
-              <div className="flex items-center ml-2 text-red-500 text-sm">
-                <TrendingDown className="h-3 w-3 mr-0.5" />
-                {Math.abs(analyticsData.profileViewsChange)}% previous week
-              </div>
+            <div className="flex items-center">
+              <Clock className="h-5 w-5 mr-2 text-blue-600" />
+              <h2 className="text-xl font-bold">Time on App</h2>
             </div>
+            <p className="text-sm text-muted-foreground mt-1">Your app usage over time</p>
           </div>
           
           <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer 
+              config={{
+                minutes: {
+                  label: "Minutes",
+                  color: "#3b82f6"
+                }
+              }}
+              className="h-full w-full"
+            >
               <LineChart
-                data={profileViewsData}
+                data={timeOnAppData}
                 margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
               >
                 <XAxis 
@@ -123,23 +135,24 @@ const Analytics = () => {
                 />
                 <YAxis 
                   tick={{ fontSize: 12 }} 
-                  domain={[0, 16]} 
-                  ticks={[0, 8, 16]} 
+                  domain={[0, 45]} 
+                  ticks={[0, 15, 30, 45]} 
                   axisLine={{ stroke: '#e5e7eb' }} 
                   tickLine={false}
+                  unit=" min"
                 />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <Tooltip />
+                <ChartTooltip content={<ChartTooltipContent />} />
                 <Line 
                   type="monotone" 
-                  dataKey="views" 
+                  dataKey="minutes" 
                   stroke="#3b82f6" 
                   strokeWidth={2} 
                   dot={{ strokeWidth: 0, r: 0 }}
                   activeDot={{ r: 5, strokeWidth: 0 }}
                 />
               </LineChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </div>
         </Card>
         
@@ -157,12 +170,15 @@ const Analytics = () => {
             </div>
           </Card>
           
-          {/* Total Users */}
+          {/* Connection Success Rate */}
           <Card className="p-4">
             <div className="flex flex-col">
-              <h3 className="text-2xl font-bold">{analyticsData.totalUsers}</h3>
-              <p className="text-sm text-muted-foreground">Total app users</p>
-              <p className="text-xs text-gray-500">Growing community</p>
+              <div className="flex items-center">
+                <UserCheck className="h-4 w-4 mr-1.5 text-green-500" />
+                <h3 className="text-2xl font-bold">{analyticsData.connectionSuccessRate}%</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">Connection success rate</p>
+              <p className="text-xs text-gray-500">{analyticsData.connectionAccepts} accepted of {analyticsData.connectionRequests} requests</p>
             </div>
           </Card>
         </div>
