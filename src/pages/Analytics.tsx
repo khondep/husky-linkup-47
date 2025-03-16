@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Legend, BarChart, Bar, Cell, PieChart, Pie, Sector } from 'recharts';
 import { Card } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, Users, Info, MessageCircle, Layers, Network, ChartBar } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Info, MessageCircle, Trophy, ChartBar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   ChartContainer, 
@@ -22,8 +22,18 @@ const analyticsData = {
   connectionsChange: 3.5,
   connectionRequests: 64,
   connectionAccepts: 42,
-  connectionSuccessRate: 65.6
+  connectionSuccessRate: 65.6,
+  networkingScore: 78
 };
+
+// Networking score data
+const networkingScoreHistory = [
+  { month: 'Sep', score: 42 },
+  { month: 'Oct', score: 58 },
+  { month: 'Nov', score: 65 },
+  { month: 'Dec', score: 72 },
+  { month: 'Jan', score: 78 }
+];
 
 // Conversation topics data
 const conversationTopicsData = [
@@ -32,17 +42,6 @@ const conversationTopicsData = [
   { name: 'Social Planning', value: 15 },
   { name: 'Research', value: 12 },
   { name: 'Industry News', value: 10 }
-];
-
-// Connection strength data for graph visualization
-const connectionStrengthData = [
-  { name: 'Alex Kim', frequency: 9, value: 80, category: 'Academic' },
-  { name: 'Jamie Lee', frequency: 7, value: 70, category: 'Technical' },
-  { name: 'Taylor Smith', frequency: 4, value: 50, category: 'Industry' },
-  { name: 'Jordan Williams', frequency: 12, value: 95, category: 'Academic' },
-  { name: 'Casey Johnson', frequency: 2, value: 30, category: 'Industry' },
-  { name: 'Riley Brown', frequency: 5, value: 60, category: 'Technical' },
-  { name: 'Morgan Davis', frequency: 8, value: 75, category: 'Academic' }
 ];
 
 // Profile skills for radar chart
@@ -150,6 +149,69 @@ const Analytics = () => {
           </Card>
         </div>
         
+        {/* Networking Score - New Section */}
+        <Card className="p-6 space-y-4">
+          <div>
+            <div className="flex items-center">
+              <Trophy className="h-5 w-5 mr-2 text-amber-500" />
+              <h2 className="text-xl font-bold">Networking Score</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              Gamified metric that evaluates your networking effectiveness
+            </p>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="mr-4">
+                <div className="flex items-baseline">
+                  <span className="text-4xl font-bold">{analyticsData.networkingScore}</span>
+                  <span className="text-sm text-muted-foreground ml-1">/100</span>
+                </div>
+                <p className="text-sm font-medium text-green-600 mt-1">Advanced Networker</p>
+              </div>
+              
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span>Outreach: 85%</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Response Rate: 72%</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
+                  <span>Engagement: 78%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="h-28 w-60">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={networkingScoreHistory} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                  <Line type="monotone" dataKey="score" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
+                  <Tooltip />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 pt-2">
+            <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              Next milestone: 80 points
+            </div>
+            <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              2 more alumni outreach needed
+            </div>
+            <div className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              Follow up with 3 recent connections
+            </div>
+          </div>
+        </Card>
+        
         {/* Conversation Topics */}
         <Card className="p-6 space-y-4">
           <div>
@@ -181,56 +243,6 @@ const Analytics = () => {
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
-          </div>
-        </Card>
-        
-        {/* Relationship Strength - Now as a graph */}
-        <Card className="p-6 space-y-4">
-          <div>
-            <div className="flex items-center">
-              <Network className="h-5 w-5 mr-2 text-indigo-600" />
-              <h2 className="text-xl font-bold">Relationship Strength</h2>
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">Visual representation of your strongest connections</p>
-          </div>
-          
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={connectionStrengthData}
-                layout="vertical"
-                margin={{ top: 5, right: 30, left: 70, bottom: 5 }}
-              >
-                <CartesianGrid horizontal strokeDasharray="3 3" />
-                <XAxis type="number" domain={[0, 100]} />
-                <YAxis type="category" dataKey="name" width={100} />
-                <Tooltip 
-                  formatter={(value) => [`${value}%`, 'Relationship Strength']}
-                  labelFormatter={(label) => `Connection: ${label}`}
-                />
-                <Legend />
-                <Bar 
-                  dataKey="value" 
-                  name="Relationship Strength" 
-                  fill="#8884d8"
-                  radius={[0, 4, 4, 0]}
-                >
-                  {connectionStrengthData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={
-                        entry.value > 70 ? '#10b981' : // green for strong
-                        entry.value > 40 ? '#f59e0b' : // amber for medium
-                        '#ef4444' // red for weak
-                      } 
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="text-xs text-center text-slate-500">
-            Based on message frequency, response time, and depth of conversation
           </div>
         </Card>
         
