@@ -9,7 +9,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 
-// Sample data
 const sampleMessages = [
   {
     id: '1',
@@ -136,12 +135,10 @@ const Messages = () => {
   const refreshIcebreaker = () => {
     setRefreshingIcebreaker(true);
     
-    // Simulate API call delay
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * icebreakers.length);
       let newIcebreaker = icebreakers[randomIndex];
       
-      // Replace placeholders with data from active message
       if (activeMessage) {
         const skills = ["AI research", "Product Management", "Machine Learning", "Data Science"];
         const companies = ["Google", "Apple", "Amazon", "Microsoft"];
@@ -164,6 +161,11 @@ const Messages = () => {
   const handleOpenMessage = (id: string) => {
     setActiveMessageId(id);
     setOpenMessageDrawer(true);
+  };
+
+  const handleUseIcebreaker = (text: string) => {
+    setMessageText(text);
+    document.body.click();
   };
   
   return (
@@ -205,12 +207,10 @@ const Messages = () => {
           </div>
         )}
 
-        {/* Message drawer */}
         <Drawer open={openMessageDrawer} onOpenChange={setOpenMessageDrawer}>
           <DrawerContent className="h-[90vh] p-0">
             {activeMessage && (
               <div className="flex flex-col h-full">
-                {/* Header */}
                 <div className="flex items-center p-4 border-b">
                   <DrawerClose asChild>
                     <button className="p-1 mr-3">
@@ -234,7 +234,6 @@ const Messages = () => {
                   </div>
                 </div>
                 
-                {/* Message list */}
                 <div className="flex-1 p-4 overflow-y-auto bg-husky-subtle/30">
                   <div className="space-y-4">
                     {conversations[activeMessageId]?.map(msg => (
@@ -257,7 +256,6 @@ const Messages = () => {
                   </div>
                 </div>
                 
-                {/* Input area */}
                 <div className="p-4 border-t bg-white">
                   <Popover>
                     <PopoverTrigger asChild>
@@ -288,9 +286,7 @@ const Messages = () => {
                           </Button>
                           <Button
                             size="sm"
-                            onClick={() => {
-                              setMessageText(currentIcebreaker);
-                            }}
+                            onClick={() => handleUseIcebreaker(currentIcebreaker)}
                           >
                             Use This
                           </Button>

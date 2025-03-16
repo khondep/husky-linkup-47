@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { PopoverContent, PopoverTrigger, Popover } from "@/components/ui/popover";
+import { toast } from "@/hooks/use-toast";
 
 // Sample alumni data
 const sampleAlumni = [{
@@ -155,6 +156,7 @@ const FilterMenu = ({
       </DrawerFooter>
     </DrawerContent>;
 };
+
 const Home = () => {
   const [isAlumniMode, setIsAlumniMode] = useState(true);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
@@ -170,47 +172,57 @@ const Home = () => {
   const profiles = isAlumniMode ? sampleAlumni : samplePeers;
   const currentProfile = profiles[currentProfileIndex];
   const canUndo = swipedProfiles.length > 0;
+
   const handleLike = () => {
     setAnimate('right');
     setTimeout(() => {
       handleNextProfile('right');
+      toast({
+        title: "Connection Request Sent",
+        description: `Your connection request to ${currentProfile.name} has been sent.`,
+        duration: 3000,
+      });
     }, 300);
   };
+
   const handleDislike = () => {
     setAnimate('left');
     setTimeout(() => {
       handleNextProfile('left');
     }, 300);
   };
-  const handleNextProfile = (direction: 'left' | 'right') => {
-    // Add current profile to swiped profiles
-    setSwipedProfiles([...swipedProfiles, currentProfile.id]);
 
-    // Move to next profile
+  const handleNextProfile = (direction: 'left' | 'right') => {
+    setSwipedProfiles([...swipedProfiles, currentProfile.id]);
     setCurrentProfileIndex(currentIndex => currentIndex < profiles.length - 1 ? currentIndex + 1 : 0);
     setAnimate(null);
   };
+
   const handleUndo = () => {
     if (!canUndo) return;
 
-    // Get the previous profile
     const prevProfileId = swipedProfiles[swipedProfiles.length - 1];
     const prevProfileIndex = profiles.findIndex(p => p.id === prevProfileId);
 
-    // Update swiped profiles and current index
     setSwipedProfiles(swipedProfiles.slice(0, -1));
     setCurrentProfileIndex(prevProfileIndex);
   };
+
   const handleApplyFilters = newFilters => {
     setFilters(newFilters);
-    // Here you would filter the profiles based on the new filters
-    // For now, we're just setting the state
   };
+
   return <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
         <div className="flex items-center">
           <img src="/lovable-uploads/husky-logo.png" alt="Husky Match" className="h-8 w-8 mr-2" />
           <h1 className="text-xl font-semibold text-husky-black">Husky Match</h1>
+        </div>
+        
+        <div className="flex items-center space-x-2 bg-husky-subtle px-3 py-1 rounded-full">
+          <span className={`text-sm transition-colors ${!isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Peers</span>
+          <Switch checked={isAlumniMode} onCheckedChange={setIsAlumniMode} />
+          <span className={`text-sm transition-colors ${isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Alumni</span>
         </div>
         
         <div className="flex items-center gap-2 object-scale-down">
@@ -226,21 +238,11 @@ const Home = () => {
       </header>
       
       <main className="flex-1 flex flex-col items-center justify-between p-6 pb-24">
-        {/* Toggle button centered */}
-        <div className="w-full flex justify-center mb-4">
-          <div className="flex items-center space-x-2 bg-husky-subtle px-3 py-1 rounded-full">
-            <span className={`text-sm transition-colors ${!isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Peers</span>
-            <Switch checked={isAlumniMode} onCheckedChange={setIsAlumniMode} />
-            <span className={`text-sm transition-colors ${isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Alumni</span>
-          </div>
-        </div>
-        
         <div className="w-full max-w-lg mx-auto">
           <div className="relative w-full">
             <div className={`relative transition-all duration-300 ${animate === 'left' ? 'translate-x-[-100px] opacity-0 rotate-[-8deg]' : animate === 'right' ? 'translate-x-[100px] opacity-0 rotate-[8deg]' : ''}`}>
               <ProfileCard profile={currentProfile} />
               
-              {/* Report button */}
               <div className="absolute bottom-4 right-4 z-10">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -279,4 +281,5 @@ const Home = () => {
       <NavigationBar />
     </div>;
 };
+
 export default Home;
