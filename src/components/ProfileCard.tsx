@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { GraduationCap, MapPin, Briefcase, ThumbsUp, ThumbsDown, ChevronUp } from 'lucide-react';
 import {
@@ -20,13 +20,110 @@ interface ProfileCardProps {
     occupation?: string;
     interests?: string[];
     matchPercentage?: number;
+    skills?: string[];
   };
   className?: string;
+  onSwipeLeft?: () => void;
+  onSwipeRight?: () => void;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ 
+  profile, 
+  className,
+  onSwipeLeft,
+  onSwipeRight 
+}) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [offsetX, setOffsetX] = useState(0);
+  const [direction, setDirection] = useState<'left' | 'right' | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+    if (isDrawerOpen) return;
+    
+    setIsDragging(true);
+    if ('touches' in e) {
+      setStartX(e.touches[0].clientX);
+    } else {
+      setStartX(e.clientX);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!isDragging || isDrawerOpen) return;
+    
+    let currentX: number;
+    if ('touches' in e) {
+      currentX = e.touches[0].clientX;
+    } else {
+      currentX = e.clientX;
+    }
+    
+    const diff = currentX - startX;
+    setOffsetX(diff);
+    
+    // Determine direction for visual indicator
+    if (diff > 40) {
+      setDirection('right');
+    } else if (diff < -40) {
+      setDirection('left');
+    } else {
+      setDirection(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging || isDrawerOpen) return;
+    
+    const SWIPE_THRESHOLD = 100;
+    
+    if (offsetX > SWIPE_THRESHOLD && onSwipeRight) {
+      onSwipeRight();
+    } else if (offsetX < -SWIPE_THRESHOLD && onSwipeLeft) {
+      onSwipeLeft();
+    } else {
+      // Reset position with animation
+      setOffsetX(0);
+    }
+    
+    setIsDragging(false);
+    setDirection(null);
+  };
+
+  // Clean up any animations or offsets when component unmounts
+  useEffect(() => {
+    return () => {
+      setOffsetX(0);
+      setIsDragging(false);
+    };
+  }, []);
+
+  // Reset offset when profile changes
+  useEffect(() => {
+    setOffsetX(0);
+    setDirection(null);
+  }, [profile.id]);
+
+  const getCardStyle = () => {
+    if (!isDragging) {
+      return {
+        transform: offsetX !== 0 ? `translateX(0)` : 'none',
+        transition: 'transform 0.3s ease'
+      };
+    }
+    
+    let rotate = offsetX * 0.1; // Add some rotation based on drag distance
+    if (rotate > 45) rotate = 45;
+    if (rotate < -45) rotate = -45;
+    
+    return {
+      transform: `translateX(${offsetX}px) rotate(${rotate}deg)`,
+      transition: 'none'
+    };
+  };
 
   return (
     <div 
@@ -35,10 +132,33 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
         className
       )}
       ref={cardRef}
+      style={getCardStyle()}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onMouseDown={handleTouchStart}
+      onMouseMove={handleTouchMove}
+      onMouseUp={handleTouchEnd}
+      onMouseLeave={handleTouchEnd}
     >
-      <Drawer>
+      {/* Like/Dislike indicators */}
+      {direction === 'right' && (
+        <div className="absolute top-8 right-8 z-20 transform rotate-12 bg-husky-red/90 text-white px-4 py-2 rounded-lg border-2 border-white">
+          <ThumbsUp className="h-8 w-8 mx-auto" />
+          <p className="font-bold text-lg mt-1">LIKE</p>
+        </div>
+      )}
+      
+      {direction === 'left' && (
+        <div className="absolute top-8 left-8 z-20 transform -rotate-12 bg-black/80 text-white px-4 py-2 rounded-lg border-2 border-white">
+          <ThumbsDown className="h-8 w-8 mx-auto" />
+          <p className="font-bold text-lg mt-1">NOPE</p>
+        </div>
+      )}
+      
+      <Drawer onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger className="w-full h-full">
-          <div className="relative h-full w-full overflow-hidden">
+          <div className="relative h-full w-full overflow-hidden" onClick={(e) => isDragging && e.preventDefault()}>
             {!imageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-husky-subtle animate-pulse">
                 <span className="sr-only">Loading</span>
@@ -112,17 +232,37 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, className }) => {
               <h3 className="text-lg font-medium text-husky-black">About</h3>
               <p className="text-husky-black/80">{profile.bio}</p>
               
-              <h3 className="text-lg font-medium text-husky-black">Interests</h3>
-              <div className="flex flex-wrap gap-2">
-                {profile.interests?.map((interest, index) => (
-                  <span 
-                    key={index} 
-                    className="inline-flex items-center rounded-full bg-husky-subtle px-3 py-1 text-xs font-medium text-husky-black"
-                  >
-                    {interest}
-                  </span>
-                ))}
-              </div>
+              {profile.interests && profile.interests.length > 0 && (
+                <>
+                  <h3 className="text-lg font-medium text-husky-black">Interests</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.interests.map((interest, index) => (
+                      <span 
+                        key={index} 
+                        className="inline-flex items-center rounded-full bg-husky-subtle px-3 py-1 text-xs font-medium text-husky-black"
+                      >
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+              
+              {profile.skills && profile.skills.length > 0 && (
+                <>
+                  <h3 className="text-lg font-medium text-husky-black">Skills</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.skills.map((skill, index) => (
+                      <span 
+                        key={index} 
+                        className="inline-flex items-center rounded-full bg-husky-subtle px-3 py-1 text-xs font-medium text-husky-black"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
               
               <div className="grid grid-cols-2 gap-4 pt-4">
                 {profile.education && (

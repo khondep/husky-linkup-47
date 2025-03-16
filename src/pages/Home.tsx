@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ProfileCard from '@/components/ProfileCard';
 import SwipeControls from '@/components/SwipeControls';
@@ -238,7 +239,11 @@ const Home = () => {
         <div className="w-full max-w-lg mx-auto">
           <div className="relative w-full">
             <div className={`relative transition-all duration-300 ${animate === 'left' ? 'translate-x-[-100px] opacity-0 rotate-[-8deg]' : animate === 'right' ? 'translate-x-[100px] opacity-0 rotate-[8deg]' : ''}`}>
-              <ProfileCard profile={currentProfile} />
+              <ProfileCard 
+                profile={currentProfile} 
+                onSwipeLeft={handleDislike}
+                onSwipeRight={handleLike}
+              />
               
               <div className="absolute bottom-4 right-4 z-10">
                 <Popover>
