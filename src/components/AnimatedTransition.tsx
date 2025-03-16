@@ -17,7 +17,7 @@ const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({
   const [transitionStage, setTransitionStage] = useState('fadeIn');
 
   useEffect(() => {
-    if (location !== displayLocation) {
+    if (location.pathname !== displayLocation.pathname) {
       setTransitionStage('fadeOut');
     }
   }, [location, displayLocation]);
@@ -32,8 +32,8 @@ const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({
   return (
     <div
       className={cn(
-        transitionStage === 'fadeIn' ? 'animate-fade-in' : 'animate-fade-out',
-        'w-full h-full',
+        'w-full h-full transition-opacity duration-300',
+        transitionStage === 'fadeIn' ? 'opacity-100' : 'opacity-0',
         className
       )}
       onAnimationEnd={handleAnimationEnd}
