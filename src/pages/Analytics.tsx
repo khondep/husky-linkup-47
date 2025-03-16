@@ -26,15 +26,6 @@ const analyticsData = {
   networkingScore: 78
 };
 
-// Networking score data
-const networkingScoreHistory = [
-  { month: 'Sep', score: 42 },
-  { month: 'Oct', score: 58 },
-  { month: 'Nov', score: 65 },
-  { month: 'Dec', score: 72 },
-  { month: 'Jan', score: 78 }
-];
-
 // Conversation topics data
 const conversationTopicsData = [
   { name: 'Career Advice', value: 35 },
@@ -161,41 +152,38 @@ const Analytics = () => {
             </p>
           </div>
           
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="mr-4">
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between">
+              <div>
                 <div className="flex items-baseline">
                   <span className="text-4xl font-bold">{analyticsData.networkingScore}</span>
                   <span className="text-sm text-muted-foreground ml-1">/100</span>
                 </div>
                 <p className="text-sm font-medium text-green-600 mt-1">Advanced Networker</p>
               </div>
+            </div>
+            
+            <div className="space-y-3 mt-4">
+              <p className="text-sm">
+                The Networking Score is a gamified metric that evaluates a student's engagement and effectiveness 
+                in networking with alumni. It encourages proactive outreach, meaningful conversations, 
+                and a strategic approach to building professional connections.
+              </p>
               
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2">
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span>Outreach: 85%</span>
+                  <span className="text-sm">Outreach: 85%</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Response Rate: 72%</span>
+                  <span className="text-sm">Response Rate: 72%</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
-                  <span>Engagement: 78%</span>
+                  <span className="text-sm">Engagement: 78%</span>
                 </div>
               </div>
-            </div>
-            
-            <div className="h-28 w-60">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={networkingScoreHistory} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                  <Line type="monotone" dataKey="score" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                  <Tooltip />
-                </LineChart>
-              </ResponsiveContainer>
             </div>
           </div>
           
