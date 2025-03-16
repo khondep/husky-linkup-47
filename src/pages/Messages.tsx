@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import MessagePreview from '@/components/MessagePreview';
@@ -7,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 // Sample data
 const sampleMessages = [
@@ -17,6 +18,7 @@ const sampleMessages = [
     lastMessage: 'Thanks for connecting! I would love to learn more about your experience in AI research.',
     time: 'Just now',
     unread: true,
+    isOnline: true,
     conversation: [
       { id: 1, sender: 'them', text: 'Hi there! I saw we matched on Husky Match. I specialize in AI research at Google.', time: '2 days ago' },
       { id: 2, sender: 'you', text: 'Hi Alex! Great to connect. I\'m really interested in AI research, especially in NLP.', time: '1 day ago' },
@@ -82,7 +84,6 @@ const sampleMessages = [
   },
 ];
 
-// Sample icebreakers
 const icebreakers = [
   "I noticed you have experience in [skill]. Could you share how you developed expertise in that area?",
   "Your work at [company] sounds interesting. What's a typical day like in your role?",
@@ -106,6 +107,7 @@ const Messages = () => {
   );
   const [refreshingIcebreaker, setRefreshingIcebreaker] = useState(false);
   const [currentIcebreaker, setCurrentIcebreaker] = useState(icebreakers[0]);
+  const navigate = useNavigate();
   
   const filteredMessages = sampleMessages.filter(message => 
     message.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -167,14 +169,7 @@ const Messages = () => {
   return (
     <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
-        <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/husky-logo.png" 
-            alt="Husky Match" 
-            className="h-8 w-8 mr-2"
-          />
-          <h1 className="text-2xl font-semibold text-husky-black">Messages</h1>
-        </div>
+        <h1 className="text-2xl font-semibold text-husky-black">Messages</h1>
       </header>
       
       <main className="flex-1 p-6 pb-24">
@@ -233,7 +228,7 @@ const Messages = () => {
                     <div>
                       <h3 className="font-medium">{activeMessage.name}</h3>
                       <p className="text-xs text-husky-gray">
-                        {activeMessage.status === 'online' ? 'Online' : 'Last seen ' + activeMessage.time}
+                        {activeMessage.isOnline ? 'Online' : 'Last seen ' + activeMessage.time}
                       </p>
                     </div>
                   </div>

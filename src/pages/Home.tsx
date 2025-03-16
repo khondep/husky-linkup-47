@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import ProfileCard from '@/components/ProfileCard';
 import SwipeControls from '@/components/SwipeControls';
 import NavigationBar from '@/components/NavigationBar';
-import { Filter, Flag } from 'lucide-react';
+import { Filter, Flag, ThumbsUp } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { 
   Drawer,
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { PopoverContent, PopoverTrigger, Popover } from "@/components/ui/popover";
+import { toast } from "@/hooks/use-toast";
 
 // Sample alumni data
 const sampleAlumni = [
@@ -218,6 +219,14 @@ const Home = () => {
   
   const handleLike = () => {
     setAnimate('right');
+    
+    // Show a notification toast
+    toast({
+      title: "Connection Request Sent",
+      description: `Your request has been sent to ${currentProfile.name}`,
+      variant: "default",
+    });
+    
     setTimeout(() => {
       handleNextProfile('right');
     }, 300);
@@ -263,16 +272,24 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
-        <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/husky-logo.png" 
-            alt="Husky Match" 
-            className="h-8 w-8 mr-2"
-          />
-          <h1 className="text-xl font-semibold text-husky-black">Husky Match</h1>
+        <img 
+          src="/lovable-uploads/husky-logo.png" 
+          alt="Husky Match" 
+          className="h-8 w-8"
+        />
+        
+        <div className="flex-1 flex justify-center">
+          <div className="flex items-center space-x-2 bg-husky-subtle px-3 py-1 rounded-full">
+            <span className={`text-sm transition-colors ${!isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Peers</span>
+            <Switch 
+              checked={isAlumniMode} 
+              onCheckedChange={setIsAlumniMode}
+            />
+            <span className={`text-sm transition-colors ${isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Alumni</span>
+          </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
             <DrawerTrigger asChild>
               <button 
@@ -292,18 +309,6 @@ const Home = () => {
       </header>
       
       <main className="flex-1 flex flex-col items-center justify-between p-6 pb-24">
-        {/* Toggle button centered */}
-        <div className="w-full flex justify-center mb-4">
-          <div className="flex items-center space-x-2 bg-husky-subtle px-3 py-1 rounded-full">
-            <span className={`text-sm transition-colors ${!isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Peers</span>
-            <Switch 
-              checked={isAlumniMode} 
-              onCheckedChange={setIsAlumniMode}
-            />
-            <span className={`text-sm transition-colors ${isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Alumni</span>
-          </div>
-        </div>
-        
         <div className="w-full max-w-lg mx-auto">
           <div className="relative w-full">
             <div 

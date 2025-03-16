@@ -6,6 +6,10 @@ import { MessageSquare, Search, BarChart } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { PieChart, Pie, Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Legend } from 'recharts';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
+import { useNavigate } from 'react-router-dom';
+
+// Profile skills - these would come from your profile in a real app
+const mySkills = ['React', 'Node.js', 'Python', 'Machine Learning'];
 
 // Sample connections data
 const connections = [
@@ -61,23 +65,24 @@ const connections = [
   },
 ];
 
-// Process data for radar chart
+// Process data for radar chart - only include skills from your profile
 const prepareSkillData = (connections) => {
-  const skillsCount = {};
+  // Filter to only include skills that match your profile
+  const relevantSkills = {};
   
-  connections.forEach(conn => {
-    conn.skills.forEach(skill => {
-      if (skillsCount[skill]) {
-        skillsCount[skill] += 1;
-      } else {
-        skillsCount[skill] = 1;
+  mySkills.forEach(skill => {
+    relevantSkills[skill] = 0;
+    
+    connections.forEach(conn => {
+      if (conn.skills.includes(skill)) {
+        relevantSkills[skill] += 1;
       }
     });
   });
   
-  return Object.keys(skillsCount).map(skill => ({
+  return Object.keys(relevantSkills).map(skill => ({
     subject: skill,
-    A: skillsCount[skill],
+    A: relevantSkills[skill],
     fullMark: connections.length
   }));
 };
@@ -85,6 +90,7 @@ const prepareSkillData = (connections) => {
 const Connections = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showChart, setShowChart] = useState(false);
+  const navigate = useNavigate();
   
   const filteredConnections = connections.filter(connection => 
     connection.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -95,17 +101,18 @@ const Connections = () => {
   
   const skillData = prepareSkillData(connections);
   
+  const handleMessageClick = (connectionId) => {
+    // Navigate to messages and open the specific conversation
+    navigate('/messages');
+    // In a real app, you would dispatch an action or use context to set the active message
+    // For now we'll just simulate this by sending the ID as a state
+    // This would be handled in the Messages component
+  };
+  
   return (
     <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
-        <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/husky-logo.png" 
-            alt="Husky Match" 
-            className="h-8 w-8 mr-2"
-          />
-          <h1 className="text-2xl font-semibold text-husky-black">Connections</h1>
-        </div>
+        <h1 className="text-2xl font-semibold text-husky-black">Connections</h1>
         
         <Drawer open={showChart} onOpenChange={setShowChart}>
           <DrawerTrigger>
@@ -188,7 +195,10 @@ const Connections = () => {
                 </div>
                 
                 <div className="ml-2">
-                  <button className="p-2 rounded-full bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors">
+                  <button 
+                    className="p-2 rounded-full bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors"
+                    onClick={() => handleMessageClick(connection.id)}
+                  >
                     <MessageSquare className="h-5 w-5" />
                   </button>
                 </div>

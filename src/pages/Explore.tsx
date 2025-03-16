@@ -2,9 +2,8 @@
 import React from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import { Calendar, Award, Coffee, Users, Book, Zap, Globe, Music, Briefcase } from 'lucide-react';
-import Logo from '@/components/Logo';
 
-// Sample data - removed job opportunities section
+// Sample data
 const exploreCategories = [
   {
     id: 'clubs',
@@ -44,31 +43,11 @@ const exploreCategories = [
   },
 ];
 
-// Icon mapping
-const icons = {
-  Users,
-  Calendar,
-  Briefcase: Briefcase,
-  Book,
-  Award,
-  Coffee,
-  Zap,
-  Globe,
-  Music
-};
-
 const Explore = () => {
   return (
     <div className="flex flex-col min-h-screen bg-husky-light">
       <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
-        <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/husky-logo.png" 
-            alt="Husky Match" 
-            className="h-8 w-8 mr-2"
-          />
-          <h1 className="text-2xl font-semibold text-husky-black">Explore</h1>
-        </div>
+        <h1 className="text-2xl font-semibold text-husky-black">Explore</h1>
       </header>
       
       <main className="flex-1 p-6 pb-24">

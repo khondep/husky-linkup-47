@@ -7,9 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AnimatedTransition from "@/components/AnimatedTransition";
 
 // Pages
-import Index from "./pages/Index";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
@@ -27,9 +24,7 @@ const App = () => (
       <BrowserRouter>
         <AnimatedTransition>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Home />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<Profile />} />
