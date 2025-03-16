@@ -34,16 +34,7 @@ const conversationTopicsData = [
   { name: 'Industry News', value: 10 }
 ];
 
-// Opportunity gaps data
-const opportunityGapsData = [
-  { name: 'Academic Support', value: 85 },
-  { name: 'Technical Skills', value: 65 },
-  { name: 'Industry Insights', value: 25 },
-  { name: 'Job Referrals', value: 30 },
-  { name: 'Leadership', value: 40 }
-];
-
-// Connection strength data for heatmap
+// Connection strength data for graph visualization
 const connectionStrengthData = [
   { name: 'Alex Kim', frequency: 9, value: 80, category: 'Academic' },
   { name: 'Jamie Lee', frequency: 7, value: 70, category: 'Technical' },
@@ -52,13 +43,6 @@ const connectionStrengthData = [
   { name: 'Casey Johnson', frequency: 2, value: 30, category: 'Industry' },
   { name: 'Riley Brown', frequency: 5, value: 60, category: 'Technical' },
   { name: 'Morgan Davis', frequency: 8, value: 75, category: 'Academic' }
-];
-
-// Connection ROI data
-const connectionROIData = [
-  { name: 'Time Invested (hrs)', Academic: 8, Technical: 6, Industry: 3 },
-  { name: 'Messages Exchanged', Academic: 47, Technical: 35, Industry: 12 },
-  { name: 'Valuable Outcomes', Academic: 5, Technical: 3, Industry: 1 }
 ];
 
 // Profile skills for radar chart
@@ -126,7 +110,6 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 const Analytics = () => {
   const skillData = prepareSkillData(connections);
-  const [activeTab, setActiveTab] = useState("topics");
   
   return (
     <div className="flex flex-col min-h-screen bg-husky-light">
@@ -201,40 +184,7 @@ const Analytics = () => {
           </div>
         </Card>
         
-        {/* Opportunity Gaps */}
-        <Card className="p-6 space-y-4">
-          <div>
-            <div className="flex items-center">
-              <Layers className="h-5 w-5 mr-2 text-amber-500" />
-              <h2 className="text-xl font-bold">Opportunity Gaps</h2>
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">Strong academic connections, but few industry insights in your field</p>
-          </div>
-          
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={opportunityGapsData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="name" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Bar dataKey="value" name="Strength">
-                  {opportunityGapsData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.value > 60 ? '#10b981' : '#f59e0b'} 
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-        
-        {/* Relationship Strength Heatmap */}
+        {/* Relationship Strength - Now as a graph */}
         <Card className="p-6 space-y-4">
           <div>
             <div className="flex items-center">
@@ -244,133 +194,44 @@ const Analytics = () => {
             <p className="text-sm text-muted-foreground mt-1">Visual representation of your strongest connections</p>
           </div>
           
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Connection</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Frequency</TableHead>
-                  <TableHead>Strength</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {connectionStrengthData.map((connection) => (
-                  <TableRow key={connection.name}>
-                    <TableCell className="font-medium">{connection.name}</TableCell>
-                    <TableCell>{connection.category}</TableCell>
-                    <TableCell>{connection.frequency} msgs/week</TableCell>
-                    <TableCell>
-                      <div className="relative w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                        <div 
-                          className="absolute top-0 left-0 h-full rounded-full" 
-                          style={{ 
-                            width: `${connection.value}%`,
-                            background: connection.value > 70 
-                              ? '#10b981' // green for strong
-                              : connection.value > 40 
-                                ? '#f59e0b' // amber for medium
-                                : '#ef4444' // red for weak
-                          }}
-                        />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={connectionStrengthData}
+                layout="vertical"
+                margin={{ top: 5, right: 30, left: 70, bottom: 5 }}
+              >
+                <CartesianGrid horizontal strokeDasharray="3 3" />
+                <XAxis type="number" domain={[0, 100]} />
+                <YAxis type="category" dataKey="name" width={100} />
+                <Tooltip 
+                  formatter={(value) => [`${value}%`, 'Relationship Strength']}
+                  labelFormatter={(label) => `Connection: ${label}`}
+                />
+                <Legend />
+                <Bar 
+                  dataKey="value" 
+                  name="Relationship Strength" 
+                  fill="#8884d8"
+                  radius={[0, 4, 4, 0]}
+                >
+                  {connectionStrengthData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={
+                        entry.value > 70 ? '#10b981' : // green for strong
+                        entry.value > 40 ? '#f59e0b' : // amber for medium
+                        '#ef4444' // red for weak
+                      } 
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </Card>
-        
-        {/* Connection ROI */}
-        <Card className="p-6 space-y-4">
-          <div>
-            <div className="flex items-center">
-              <ChartBar className="h-5 w-5 mr-2 text-rose-600" />
-              <h2 className="text-xl font-bold">Connection ROI</h2>
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">Time invested in networking vs. valuable outcomes achieved</p>
+          <div className="text-xs text-center text-slate-500">
+            Based on message frequency, response time, and depth of conversation
           </div>
-          
-          <Tabs defaultValue="topics" className="w-full" onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="topics">Academic</TabsTrigger>
-              <TabsTrigger value="technical">Technical</TabsTrigger>
-              <TabsTrigger value="industry">Industry</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="topics">
-              <div className="space-y-4 pt-4">
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-indigo-600">8</span>
-                    <span className="text-xs text-slate-500">Hours Invested</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-indigo-600">47</span>
-                    <span className="text-xs text-slate-500">Messages</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-green-600">5</span>
-                    <span className="text-xs text-slate-500">Outcomes</span>
-                  </div>
-                </div>
-                
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <h4 className="text-sm font-medium mb-2">Academic Insights</h4>
-                  <p className="text-xs text-slate-600">Your academic connections have yielded 5 valuable outcomes, including research collaborations and study group formations. This represents a strong ROI with 0.6 outcomes per hour invested.</p>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="technical">
-              <div className="space-y-4 pt-4">
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-indigo-600">6</span>
-                    <span className="text-xs text-slate-500">Hours Invested</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-indigo-600">35</span>
-                    <span className="text-xs text-slate-500">Messages</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-green-600">3</span>
-                    <span className="text-xs text-slate-500">Outcomes</span>
-                  </div>
-                </div>
-                
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <h4 className="text-sm font-medium mb-2">Technical Insights</h4>
-                  <p className="text-xs text-slate-600">Your technical connections have resulted in 3 valuable outcomes, including skill improvements and code reviews. This represents a moderate ROI with 0.5 outcomes per hour invested.</p>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="industry">
-              <div className="space-y-4 pt-4">
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-indigo-600">3</span>
-                    <span className="text-xs text-slate-500">Hours Invested</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-indigo-600">12</span>
-                    <span className="text-xs text-slate-500">Messages</span>
-                  </div>
-                  <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-                    <span className="text-2xl font-bold text-green-600">1</span>
-                    <span className="text-xs text-slate-500">Outcomes</span>
-                  </div>
-                </div>
-                
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <h4 className="text-sm font-medium mb-2">Industry Insights</h4>
-                  <p className="text-xs text-slate-600">Your industry connections have only produced 1 valuable outcome. This represents a lower ROI with 0.3 outcomes per hour invested, suggesting an opportunity for focused networking.</p>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
         </Card>
         
         {/* Skill Matching Radar Chart */}
