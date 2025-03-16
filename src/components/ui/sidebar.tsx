@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
@@ -190,7 +191,8 @@ const Sidebar = React.forwardRef<
       )
     }
 
-    if (isMobile) {
+    // Force mobile view
+    if (true) { // Changed from isMobile to always true to force mobile configuration
       return (
         <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
           <SheetContent
@@ -210,6 +212,7 @@ const Sidebar = React.forwardRef<
       )
     }
 
+    // This block will never execute since we're forcing mobile view
     return (
       <div
         ref={ref}
