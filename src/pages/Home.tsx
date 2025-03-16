@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ProfileCard from '@/components/ProfileCard';
 import SwipeControls from '@/components/SwipeControls';
@@ -362,7 +363,6 @@ const Home = () => {
               onDislike={handleDislike} 
               onUndo={handleUndo} 
               canUndo={canUndo}
-              disabled={filteredProfiles.length === 0}
             />
           </TutorialHighlight>
         </div>
