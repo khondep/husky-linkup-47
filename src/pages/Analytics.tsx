@@ -165,9 +165,10 @@ const Analytics = () => {
             
             <div className="space-y-3 mt-4">
               <p className="text-sm">
-                The Networking Score is a gamified metric that evaluates a student's engagement and effectiveness 
-                in networking with alumni. It encourages proactive outreach, meaningful conversations, 
-                and a strategic approach to building professional connections.
+                <span className="font-medium">Advanced Networker</span> is a prestigious networking rank that indicates 
+                you've built a strong professional network with quality connections. You actively initiate meaningful 
+                conversations, maintain regular contact with your connections, and effectively leverage your network for 
+                mutual benefit. This status means you're in the top 25% of users for networking effectiveness.
               </p>
               
               <div className="space-y-2">
