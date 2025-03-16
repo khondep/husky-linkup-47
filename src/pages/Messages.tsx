@@ -106,6 +106,7 @@ const Messages = () => {
   );
   const [refreshingIcebreaker, setRefreshingIcebreaker] = useState(false);
   const [currentIcebreaker, setCurrentIcebreaker] = useState(icebreakers[0]);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -189,10 +190,7 @@ const Messages = () => {
 
   const handleUseIcebreaker = (text: string) => {
     setMessageText(text);
-    const popoverTrigger = document.querySelector('[data-radix-popover-trigger-icon]') as HTMLButtonElement;
-    if (popoverTrigger) {
-      popoverTrigger.click();
-    }
+    setIsPopoverOpen(false);
     
     setTimeout(() => {
       const inputElement = document.querySelector('input[placeholder="Type a message..."]') as HTMLInputElement;
@@ -296,11 +294,10 @@ const Messages = () => {
                 </div>
                 
                 <div className="p-4 border-t bg-white">
-                  <Popover>
+                  <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                     <PopoverTrigger asChild>
                       <button 
                         className="flex items-center text-xs text-husky-blue mb-2"
-                        data-radix-popover-trigger-icon
                       >
                         Need an icebreaker?
                         <RefreshCw 
