@@ -189,7 +189,10 @@ const Messages = () => {
 
   const handleUseIcebreaker = (text: string) => {
     setMessageText(text);
-    document.querySelector('[data-radix-popover-trigger-icon]')?.click();
+    const popoverTrigger = document.querySelector('[data-radix-popover-trigger-icon]') as HTMLButtonElement;
+    if (popoverTrigger) {
+      popoverTrigger.click();
+    }
     
     setTimeout(() => {
       const inputElement = document.querySelector('input[placeholder="Type a message..."]') as HTMLInputElement;
