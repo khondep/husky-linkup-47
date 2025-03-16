@@ -132,15 +132,17 @@ const TutorialStep: React.FC = () => {
             <Info className="h-4 w-4 text-primary" />
             {currentStepData.title}
           </h3>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 w-6 p-0"
-            onClick={skipTutorial}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Skip tutorial</span>
-          </Button>
+          {!isLastStep && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 w-6 p-0"
+              onClick={skipTutorial}
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Skip tutorial</span>
+            </Button>
+          )}
         </div>
         
         <p className="text-sm mb-6">
@@ -152,38 +154,45 @@ const TutorialStep: React.FC = () => {
             Step {currentStep + 1} of {steps.length}
           </div>
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={skipTutorial}
-              className="text-xs px-2"
-            >
-              Skip
-            </Button>
+            {!isLastStep && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={skipTutorial}
+                className="text-xs px-2"
+              >
+                Skip
+              </Button>
+            )}
             {!isFirstStep && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={prevStep}
-                className="p-0 h-8 w-8"
+                className="flex items-center gap-1 px-2 py-1 h-8"
               >
                 <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Previous</span>
+                Back
               </Button>
             )}
-            <Button
-              size="sm"
-              onClick={nextStep}
-              className="p-0 h-8 w-8"
-            >
-              {isLastStep ? 
-                <X className="h-4 w-4" /> : 
+            {isLastStep ? (
+              <Button
+                size="sm"
+                onClick={skipTutorial}
+                className="px-3"
+              >
+                I'm All Set
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={nextStep}
+                className="p-0 h-8 w-8"
+              >
                 <ChevronRight className="h-4 w-4" />
-              }
-              <span className="sr-only">
-                {isLastStep ? 'Finish' : 'Next'}
-              </span>
-            </Button>
+                <span className="sr-only">Next</span>
+              </Button>
+            )}
           </div>
         </div>
       </Card>
