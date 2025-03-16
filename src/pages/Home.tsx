@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { PopoverContent, PopoverTrigger, Popover } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
+import TutorialHighlight from '@/components/Tutorial/TutorialHighlight';
 
 // Sample alumni data
 const sampleAlumni = [{
@@ -213,26 +214,31 @@ const Home = () => {
   };
 
   return <div className="flex flex-col min-h-screen bg-husky-light">
-      <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light">
+      <TutorialHighlight 
+        id="tutorial-home-header" 
+        className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light"
+      >
         <div className="w-10"></div>
         
-        <div className="flex items-center space-x-2 bg-husky-subtle px-3 py-1 rounded-full">
+        <TutorialHighlight id="tutorial-toggle-mode" className="flex items-center space-x-2 bg-husky-subtle px-3 py-1 rounded-full">
           <span className={`text-sm transition-colors ${!isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Peers</span>
           <Switch checked={isAlumniMode} onCheckedChange={setIsAlumniMode} />
           <span className={`text-sm transition-colors ${isAlumniMode ? 'font-medium text-husky-black' : 'text-husky-gray'}`}>Alumni</span>
-        </div>
+        </TutorialHighlight>
         
         <div className="flex items-center gap-2">
           <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
             <DrawerTrigger asChild>
-              <button className="p-2 rounded-xl bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors focus-ring" aria-label="Filter">
-                <Filter className="h-5 w-5" />
-              </button>
+              <TutorialHighlight id="tutorial-filter-button">
+                <button className="p-2 rounded-xl bg-husky-subtle text-husky-black hover:bg-husky-gray-light transition-colors focus-ring" aria-label="Filter">
+                  <Filter className="h-5 w-5" />
+                </button>
+              </TutorialHighlight>
             </DrawerTrigger>
             <FilterMenu isOpen={filterOpen} onClose={() => setFilterOpen(false)} onApplyFilters={handleApplyFilters} />
           </Drawer>
         </div>
-      </header>
+      </TutorialHighlight>
       
       <main className="flex-1 flex flex-col items-center justify-between p-6 pb-24">
         <div className="w-full max-w-lg mx-auto">
@@ -273,9 +279,9 @@ const Home = () => {
             </div>
           </div>
           
-          <div className="mt-6">
+          <TutorialHighlight id="tutorial-swipe-controls" className="mt-6">
             <SwipeControls onLike={handleLike} onDislike={handleDislike} onUndo={handleUndo} canUndo={canUndo} />
-          </div>
+          </TutorialHighlight>
         </div>
       </main>
       

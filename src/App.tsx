@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import AnimatedTransition from "@/components/AnimatedTransition";
+import { TutorialProvider } from "@/contexts/TutorialContext";
+import TutorialStep from "@/components/Tutorial/TutorialStep";
 
 // Pages
 import Home from "./pages/Home";
@@ -21,18 +23,21 @@ const AppRoutes = () => {
   const location = useLocation();
   
   return (
-    <AnimatedTransition key={location.pathname}>
-      <Routes location={location}>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </AnimatedTransition>
+    <>
+      <TutorialStep />
+      <AnimatedTransition key={location.pathname}>
+        <Routes location={location}>
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AnimatedTransition>
+    </>
   );
 };
 
@@ -42,7 +47,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppRoutes />
+        <TutorialProvider>
+          <AppRoutes />
+        </TutorialProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
