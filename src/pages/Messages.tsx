@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import MessagePreview from '@/components/MessagePreview';
@@ -110,27 +109,22 @@ const Messages = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Parse the contactId from URL query parameters
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const contactId = params.get('contactId');
     
     if (contactId) {
-      // Check if the contactId exists in our sample messages
       const contactExists = sampleMessages.some(msg => msg.id === contactId);
       
       if (contactExists) {
         setActiveMessageId(contactId);
         setOpenMessageDrawer(true);
       } else {
-        // If contact doesn't exist in our messages yet, we would typically
-        // create a new conversation thread here in a real app
         toast({
           title: "Starting new conversation",
           description: "Opening chat with this connection.",
         });
         
-        // For this demo, let's default to the first conversation if contact not found
         setActiveMessageId(sampleMessages[0].id);
         setOpenMessageDrawer(true);
       }
@@ -188,7 +182,6 @@ const Messages = () => {
   };
 
   const handleOpenMessage = (id: string) => {
-    // Update URL with the contactId parameter for better sharing and navigation
     navigate(`/messages?contactId=${id}`, { replace: true });
     setActiveMessageId(id);
     setOpenMessageDrawer(true);
@@ -196,12 +189,18 @@ const Messages = () => {
 
   const handleUseIcebreaker = (text: string) => {
     setMessageText(text);
-    document.body.click();
+    document.querySelector('[data-radix-popover-trigger-icon]')?.click();
+    
+    setTimeout(() => {
+      const inputElement = document.querySelector('input[placeholder="Type a message..."]') as HTMLInputElement;
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }, 100);
   };
 
   const handleCloseDrawer = () => {
     setOpenMessageDrawer(false);
-    // Remove the contactId from URL when closing the conversation
     navigate('/messages', { replace: true });
   };
   
@@ -296,7 +295,10 @@ const Messages = () => {
                 <div className="p-4 border-t bg-white">
                   <Popover>
                     <PopoverTrigger asChild>
-                      <button className="flex items-center text-xs text-husky-blue mb-2">
+                      <button 
+                        className="flex items-center text-xs text-husky-blue mb-2"
+                        data-radix-popover-trigger-icon
+                      >
                         Need an icebreaker?
                         <RefreshCw 
                           className={`h-3 w-3 ml-1 ${refreshingIcebreaker ? 'animate-spin' : ''}`} 
