@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProfileCard from '@/components/ProfileCard';
 import SwipeControls from '@/components/SwipeControls';
 import NavigationBar from '@/components/NavigationBar';
@@ -89,13 +89,15 @@ const samplePeers = [{
 const FilterMenu = ({
   isOpen,
   onClose,
-  onApplyFilters
+  onApplyFilters,
+  currentFilters
 }) => {
-  const [distance, setDistance] = useState([50]);
-  const [minMatchPercentage, setMinMatchPercentage] = useState([70]);
-  const [selectedSkills, setSelectedSkills] = useState(['React', 'Python']);
-  const [location, setLocation] = useState('Boston, MA');
+  const [distance, setDistance] = useState([currentFilters.distance]);
+  const [minMatchPercentage, setMinMatchPercentage] = useState([currentFilters.minMatchPercentage]);
+  const [selectedSkills, setSelectedSkills] = useState(currentFilters.selectedSkills);
+  const [location, setLocation] = useState(currentFilters.location);
   const skillOptions = ['React', 'Python', 'Java', 'Machine Learning', 'Data Science', 'Product Management', 'UX/UI', 'Node.js', 'SQL', 'Algorithms'];
+  
   const handleApply = () => {
     onApplyFilters({
       distance: distance[0],
@@ -104,8 +106,17 @@ const FilterMenu = ({
       location
     });
     onClose();
+    
+    // Show toast notification
+    toast({
+      title: "Filters Applied",
+      description: `Showing profiles with ${selectedSkills.length} skills, ${minMatchPercentage}% match minimum`,
+      duration: 3000,
+    });
   };
-  return <DrawerContent className="max-h-[80vh] overflow-y-auto">
+  
+  return (
+    <DrawerContent className="max-h-[80vh] overflow-y-auto">
       <DrawerHeader>
         <DrawerTitle>Filter Profiles</DrawerTitle>
         <DrawerDescription>
@@ -137,15 +148,22 @@ const FilterMenu = ({
         <div className="space-y-2">
           <label className="text-sm font-medium">Skills</label>
           <div className="flex flex-wrap gap-2">
-            {skillOptions.map(skill => <Button key={skill} variant={selectedSkills.includes(skill) ? "default" : "outline"} size="sm" onClick={() => {
-            if (selectedSkills.includes(skill)) {
-              setSelectedSkills(selectedSkills.filter(s => s !== skill));
-            } else {
-              setSelectedSkills([...selectedSkills, skill]);
-            }
-          }}>
+            {skillOptions.map(skill => (
+              <Button 
+                key={skill} 
+                variant={selectedSkills.includes(skill) ? "default" : "outline"} 
+                size="sm" 
+                onClick={() => {
+                  if (selectedSkills.includes(skill)) {
+                    setSelectedSkills(selectedSkills.filter(s => s !== skill));
+                  } else {
+                    setSelectedSkills([...selectedSkills, skill]);
+                  }
+                }}
+              >
                 {skill}
-              </Button>)}
+              </Button>
+            ))}
           </div>
         </div>
       </div>
@@ -155,7 +173,8 @@ const FilterMenu = ({
           <Button variant="outline">Cancel</Button>
         </DrawerClose>
       </DrawerFooter>
-    </DrawerContent>;
+    </DrawerContent>
+  );
 };
 
 const Home = () => {
@@ -170,11 +189,53 @@ const Home = () => {
     selectedSkills: ['React', 'Python'],
     location: 'Boston, MA'
   });
-  const profiles = isAlumniMode ? sampleAlumni : samplePeers;
-  const currentProfile = profiles[currentProfileIndex];
+  const [filteredProfiles, setFilteredProfiles] = useState([]);
+  
+  // Get all profiles based on mode
+  const allProfiles = isAlumniMode ? sampleAlumni : samplePeers;
+  
+  // Apply filters to profiles
+  useEffect(() => {
+    const filtered = allProfiles.filter(profile => {
+      // Filter by match percentage
+      if (profile.matchPercentage && profile.matchPercentage < filters.minMatchPercentage) {
+        return false;
+      }
+      
+      // Filter by skills (show profiles that have at least one of the selected skills)
+      if (filters.selectedSkills.length > 0 && profile.skills) {
+        const hasMatchingSkill = profile.skills.some(skill => 
+          filters.selectedSkills.includes(skill)
+        );
+        if (!hasMatchingSkill) return false;
+      }
+      
+      // Filter by location (simple string match for now)
+      if (filters.location && profile.location) {
+        if (!profile.location.includes(filters.location)) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+    
+    setFilteredProfiles(filtered);
+    // Reset to first profile when filters change
+    setCurrentProfileIndex(0);
+    setSwipedProfiles([]);
+  }, [filters, isAlumniMode]);
+  
+  // Get current profile to display
+  const currentProfile = filteredProfiles.length > 0 
+    ? filteredProfiles[currentProfileIndex]
+    : { id: 'no-match', name: 'No Matches', image: '/placeholder.svg', bio: 'Try adjusting your filters to see more profiles' };
+  
   const canUndo = swipedProfiles.length > 0;
 
   const handleLike = () => {
+    if (filteredProfiles.length === 0) return;
+    
     setAnimate('right');
     setTimeout(() => {
       handleNextProfile('right');
@@ -187,6 +248,8 @@ const Home = () => {
   };
 
   const handleDislike = () => {
+    if (filteredProfiles.length === 0) return;
+    
     setAnimate('left');
     setTimeout(() => {
       handleNextProfile('left');
@@ -194,8 +257,12 @@ const Home = () => {
   };
 
   const handleNextProfile = (direction: 'left' | 'right') => {
+    if (filteredProfiles.length === 0) return;
+    
     setSwipedProfiles([...swipedProfiles, currentProfile.id]);
-    setCurrentProfileIndex(currentIndex => currentIndex < profiles.length - 1 ? currentIndex + 1 : 0);
+    setCurrentProfileIndex(currentIndex => 
+      currentIndex < filteredProfiles.length - 1 ? currentIndex + 1 : 0
+    );
     setAnimate(null);
   };
 
@@ -203,17 +270,20 @@ const Home = () => {
     if (!canUndo) return;
 
     const prevProfileId = swipedProfiles[swipedProfiles.length - 1];
-    const prevProfileIndex = profiles.findIndex(p => p.id === prevProfileId);
+    const prevProfileIndex = filteredProfiles.findIndex(p => p.id === prevProfileId);
 
     setSwipedProfiles(swipedProfiles.slice(0, -1));
-    setCurrentProfileIndex(prevProfileIndex);
+    if (prevProfileIndex !== -1) {
+      setCurrentProfileIndex(prevProfileIndex);
+    }
   };
 
   const handleApplyFilters = newFilters => {
     setFilters(newFilters);
   };
 
-  return <div className="flex flex-col min-h-screen bg-husky-light">
+  return (
+    <div className="flex flex-col min-h-screen bg-husky-light">
       <TutorialHighlight 
         id="tutorial-home-header" 
         className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 border-b border-husky-gray-light"
@@ -235,7 +305,12 @@ const Home = () => {
                 </button>
               </TutorialHighlight>
             </DrawerTrigger>
-            <FilterMenu isOpen={filterOpen} onClose={() => setFilterOpen(false)} onApplyFilters={handleApplyFilters} />
+            <FilterMenu 
+              isOpen={filterOpen} 
+              onClose={() => setFilterOpen(false)} 
+              onApplyFilters={handleApplyFilters}
+              currentFilters={filters}
+            />
           </Drawer>
         </div>
       </TutorialHighlight>
@@ -250,43 +325,52 @@ const Home = () => {
                 onSwipeRight={handleLike}
               />
               
-              <div className="absolute bottom-4 right-4 z-10">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
-                      <Flag className="h-4 w-4 mr-1 text-husky-red" />
-                      Report
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="space-y-4">
-                      <h4 className="font-medium">Report {currentProfile.name}</h4>
-                      <p className="text-sm text-husky-gray-dark">Select a reason for reporting this profile:</p>
-                      <ToggleGroup type="single" variant="outline" className="flex flex-col space-y-2">
-                        <ToggleGroupItem value="inappropriate" className="justify-start">Inappropriate content</ToggleGroupItem>
-                        <ToggleGroupItem value="fake" className="justify-start">Fake profile</ToggleGroupItem>
-                        <ToggleGroupItem value="spam" className="justify-start">Spam</ToggleGroupItem>
-                        <ToggleGroupItem value="other" className="justify-start">Other</ToggleGroupItem>
-                      </ToggleGroup>
-                      <Input placeholder="Additional details (optional)" />
-                      <div className="flex justify-end">
-                        <Button size="sm">Submit Report</Button>
+              {filteredProfiles.length > 0 && (
+                <div className="absolute bottom-4 right-4 z-10">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
+                        <Flag className="h-4 w-4 mr-1 text-husky-red" />
+                        Report
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <div className="space-y-4">
+                        <h4 className="font-medium">Report {currentProfile.name}</h4>
+                        <p className="text-sm text-husky-gray-dark">Select a reason for reporting this profile:</p>
+                        <ToggleGroup type="single" variant="outline" className="flex flex-col space-y-2">
+                          <ToggleGroupItem value="inappropriate" className="justify-start">Inappropriate content</ToggleGroupItem>
+                          <ToggleGroupItem value="fake" className="justify-start">Fake profile</ToggleGroupItem>
+                          <ToggleGroupItem value="spam" className="justify-start">Spam</ToggleGroupItem>
+                          <ToggleGroupItem value="other" className="justify-start">Other</ToggleGroupItem>
+                        </ToggleGroup>
+                        <Input placeholder="Additional details (optional)" />
+                        <div className="flex justify-end">
+                          <Button size="sm">Submit Report</Button>
+                        </div>
                       </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              )}
             </div>
           </div>
           
           <TutorialHighlight id="tutorial-swipe-controls" className="mt-6">
-            <SwipeControls onLike={handleLike} onDislike={handleDislike} onUndo={handleUndo} canUndo={canUndo} />
+            <SwipeControls 
+              onLike={handleLike} 
+              onDislike={handleDislike} 
+              onUndo={handleUndo} 
+              canUndo={canUndo}
+              disabled={filteredProfiles.length === 0}
+            />
           </TutorialHighlight>
         </div>
       </main>
       
       <NavigationBar />
-    </div>;
+    </div>
+  );
 };
 
 export default Home;
