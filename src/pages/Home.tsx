@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ProfileCard from '@/components/ProfileCard';
 import SwipeControls from '@/components/SwipeControls';
@@ -195,43 +194,15 @@ const Home = () => {
   // Get all profiles based on mode
   const allProfiles = isAlumniMode ? sampleAlumni : samplePeers;
   
-  // Apply filters to profiles
+  // Only apply filters when user explicitly applies them
+  // (removed the useEffect that was applying filters automatically when filters changed)
+  
+  // Initialize with all profiles
   useEffect(() => {
-    const filtered = allProfiles.filter(profile => {
-      // Filter by match percentage
-      if (profile.matchPercentage && profile.matchPercentage < filters.minMatchPercentage) {
-        return false;
-      }
-      
-      // Filter by skills (show profiles that have at least one of the selected skills)
-      if (filters.selectedSkills.length > 0 && profile.skills) {
-        const hasMatchingSkill = profile.skills.some(skill => 
-          filters.selectedSkills.includes(skill)
-        );
-        if (!hasMatchingSkill) return false;
-      }
-      
-      // Filter by location (simple string match for now)
-      if (filters.location && profile.location) {
-        if (!profile.location.includes(filters.location)) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
-    
-    setFilteredProfiles(filtered);
+    setFilteredProfiles(allProfiles);
     setCurrentProfileIndex(0);
     setSwipedProfiles([]);
-  }, [filters, isAlumniMode]);
-  
-  // Initialize with filtered profiles if empty
-  useEffect(() => {
-    if (filteredProfiles.length === 0 && allProfiles.length > 0) {
-      setFilteredProfiles(allProfiles);
-    }
-  }, [filteredProfiles, allProfiles]);
+  }, [isAlumniMode, allProfiles]);
   
   // Get current profile to display
   const currentProfile = filteredProfiles.length > 0 && currentProfileIndex < filteredProfiles.length
@@ -295,6 +266,35 @@ const Home = () => {
 
   const handleApplyFilters = newFilters => {
     setFilters(newFilters);
+    
+    // Apply filters only when the user clicks "Apply Filters"
+    const filtered = allProfiles.filter(profile => {
+      // Filter by match percentage
+      if (profile.matchPercentage && profile.matchPercentage < newFilters.minMatchPercentage) {
+        return false;
+      }
+      
+      // Filter by skills (show profiles that have at least one of the selected skills)
+      if (newFilters.selectedSkills.length > 0 && profile.skills) {
+        const hasMatchingSkill = profile.skills.some(skill => 
+          newFilters.selectedSkills.includes(skill)
+        );
+        if (!hasMatchingSkill) return false;
+      }
+      
+      // Filter by location (simple string match for now)
+      if (newFilters.location && profile.location) {
+        if (!profile.location.includes(newFilters.location)) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+    
+    setFilteredProfiles(filtered);
+    setCurrentProfileIndex(0);
+    setSwipedProfiles([]);
   };
 
   return (
