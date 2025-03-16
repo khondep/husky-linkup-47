@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import NavigationBar from '@/components/NavigationBar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Legend, BarChart, Bar, Cell, PieChart, Pie, Sector } from 'recharts';
 import { Card } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, Users, Info, MessageCircle, Trophy, ChartBar } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Info, MessageCircle, Trophy, ChartBar, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   ChartContainer, 
@@ -13,6 +12,8 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Sample analytics data (adjusted for a 600-user app)
 const analyticsData = {
@@ -159,31 +160,40 @@ const Analytics = () => {
                   <span className="text-4xl font-bold">{analyticsData.networkingScore}</span>
                   <span className="text-sm text-muted-foreground ml-1">/100</span>
                 </div>
-                <p className="text-sm font-medium text-green-600 mt-1">Advanced Networker</p>
+                <div className="flex items-center mt-1">
+                  <p className="text-sm font-medium text-green-600">Advanced Networker</p>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 p-0 ml-1">
+                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                        <span className="sr-only">Advanced Networker Info</span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Advanced Networker</h4>
+                        <p className="text-sm text-muted-foreground">
+                          This is a prestigious networking rank that indicates you've built a strong professional network with quality connections. You actively initiate meaningful conversations, maintain regular contact with your connections, and effectively leverage your network for mutual benefit. This status means you're in the top 25% of users for networking effectiveness.
+                        </p>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
             </div>
             
-            <div className="space-y-3 mt-4">
-              <p className="text-sm">
-                <span className="font-medium">Advanced Networker</span> is a prestigious networking rank that indicates 
-                you've built a strong professional network with quality connections. You actively initiate meaningful 
-                conversations, maintain regular contact with your connections, and effectively leverage your network for 
-                mutual benefit. This status means you're in the top 25% of users for networking effectiveness.
-              </p>
-              
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-sm">Outreach: 85%</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                  <span className="text-sm">Response Rate: 72%</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
-                  <span className="text-sm">Engagement: 78%</span>
-                </div>
+            <div className="space-y-2 mt-4">
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                <span className="text-sm">Outreach: 85%</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                <span className="text-sm">Response Rate: 72%</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
+                <span className="text-sm">Engagement: 78%</span>
               </div>
             </div>
           </div>
