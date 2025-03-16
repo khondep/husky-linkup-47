@@ -226,8 +226,15 @@ const Home = () => {
     setSwipedProfiles([]);
   }, [filters, isAlumniMode]);
   
+  // Initialize with filtered profiles if empty
+  useEffect(() => {
+    if (filteredProfiles.length === 0 && allProfiles.length > 0) {
+      setFilteredProfiles(allProfiles);
+    }
+  }, [filteredProfiles, allProfiles]);
+  
   // Get current profile to display
-  const currentProfile = filteredProfiles.length > 0 
+  const currentProfile = filteredProfiles.length > 0 && currentProfileIndex < filteredProfiles.length
     ? filteredProfiles[currentProfileIndex]
     : { id: 'no-match', name: 'No Matches', image: '/placeholder.svg', bio: 'Try adjusting your filters to see more profiles' };
   
