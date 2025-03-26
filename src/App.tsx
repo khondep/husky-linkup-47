@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import AnimatedTransition from "@/components/AnimatedTransition";
 import { TutorialProvider } from "@/contexts/TutorialContext";
 import TutorialStep from "@/components/Tutorial/TutorialStep";
+import React from "react";
 
 // Pages
 import Home from "./pages/Home";
@@ -22,6 +23,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProfileSetup from "./pages/ProfileSetup";
 
+// Create a new QueryClient instance
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
@@ -50,18 +52,23 @@ const AppRoutes = () => {
   );
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <TutorialProvider>
-          <AppRoutes />
-        </TutorialProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+// Use a functional component for App
+const App = () => {
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <TutorialProvider>
+              <AppRoutes />
+            </TutorialProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;
