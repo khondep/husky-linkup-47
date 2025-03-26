@@ -19,11 +19,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/hooks/use-toast';
-import { ArrowRight, Upload, User } from 'lucide-react';
+import { ArrowRight, ChevronDown, Plus, Upload, User, X } from 'lucide-react';
 
 const profileSetupSchema = z.object({
   about: z.string().min(10, 'Please write at least 10 characters about yourself').max(500, 'Bio must be less than 500 characters'),
@@ -36,11 +42,29 @@ const profileSetupSchema = z.object({
 
 type ProfileSetupValues = z.infer<typeof profileSetupSchema>;
 
+// Predefined lists of common options
+const commonSkills = [
+  "JavaScript", "Python", "Java", "C++", "React", "Angular", "Vue.js", 
+  "Node.js", "Express", "MongoDB", "SQL", "Data Analysis", "Machine Learning",
+  "UI/UX Design", "Project Management", "Public Speaking", "Leadership",
+  "Problem Solving", "Critical Thinking", "Communication"
+];
+
+const commonInterests = [
+  "Reading", "Writing", "Hiking", "Traveling", "Photography", "Music", 
+  "Art", "Movies", "Gaming", "Cooking", "Fitness", "Sports", "Technology",
+  "Volunteering", "Gardening", "Fashion", "Dance", "Theater", "DIY Projects"
+];
+
 const ProfileSetup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [newSkill, setNewSkill] = useState('');
+  const [newInterest, setNewInterest] = useState('');
   
   const form = useForm<ProfileSetupValues>({
     resolver: zodResolver(profileSetupSchema),
@@ -67,21 +91,45 @@ const ProfileSetup = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const addSkill = (skill: string) => {
+    if (skill && !selectedSkills.includes(skill)) {
+      setSelectedSkills([...selectedSkills, skill]);
+      form.setValue('skills', [...selectedSkills, skill].join(', '));
+      setNewSkill('');
+    }
+  };
+
+  const removeSkill = (skill: string) => {
+    const updated = selectedSkills.filter(s => s !== skill);
+    setSelectedSkills(updated);
+    form.setValue('skills', updated.join(', '));
+  };
+
+  const addInterest = (interest: string) => {
+    if (interest && !selectedInterests.includes(interest)) {
+      setSelectedInterests([...selectedInterests, interest]);
+      form.setValue('interests', [...selectedInterests, interest].join(', '));
+      setNewInterest('');
+    }
+  };
+
+  const removeInterest = (interest: string) => {
+    const updated = selectedInterests.filter(i => i !== interest);
+    setSelectedInterests(updated);
+    form.setValue('interests', updated.join(', '));
+  };
   
   const onSubmit = async (data: ProfileSetupValues) => {
     setIsLoading(true);
-    
-    // Convert comma-separated strings to arrays
-    const skills = data.skills ? data.skills.split(',').map(skill => skill.trim()) : [];
-    const interests = data.interests ? data.interests.split(',').map(interest => interest.trim()) : [];
     
     try {
       // Simulate API call for saving profile data
       setTimeout(() => {
         console.log('Profile data:', {
           ...data,
-          skills,
-          interests,
+          skills: selectedSkills,
+          interests: selectedInterests,
           profileImage: profileImage ? profileImage.name : 'No image uploaded'
         });
         
@@ -196,13 +244,74 @@ const ProfileSetup = () => {
                 name="skills"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Skills (Optional)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g. Python, Data Analysis, Public Speaking (comma separated)" 
-                        {...field} 
-                      />
-                    </FormControl>
+                    <FormLabel>Skills</FormLabel>
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {selectedSkills.map((skill, index) => (
+                          <div 
+                            key={index}
+                            className="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full flex items-center"
+                          >
+                            {skill}
+                            <button 
+                              type="button" 
+                              onClick={() => removeSkill(skill)}
+                              className="ml-1.5 text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <Input 
+                            placeholder="Add a skill..."
+                            value={newSkill}
+                            onChange={(e) => setNewSkill(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && newSkill) {
+                                e.preventDefault();
+                                addSkill(newSkill);
+                              }
+                            }}
+                          />
+                        </div>
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" type="button">
+                              <ChevronDown className="h-4 w-4 mr-2" />
+                              Select
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-[200px] max-h-[300px] overflow-y-auto">
+                            {commonSkills.map((skill, idx) => (
+                              <DropdownMenuItem 
+                                key={idx} 
+                                onClick={() => addSkill(skill)}
+                                disabled={selectedSkills.includes(skill)}
+                                className={selectedSkills.includes(skill) ? "opacity-50" : ""}
+                              >
+                                {skill}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon"
+                          onClick={() => addSkill(newSkill)}
+                          disabled={!newSkill}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <input type="hidden" {...field} />
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -213,13 +322,74 @@ const ProfileSetup = () => {
                 name="interests"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Interests (Optional)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g. Hiking, Reading, Photography (comma separated)" 
-                        {...field} 
-                      />
-                    </FormControl>
+                    <FormLabel>Interests</FormLabel>
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {selectedInterests.map((interest, index) => (
+                          <div 
+                            key={index}
+                            className="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full flex items-center"
+                          >
+                            {interest}
+                            <button 
+                              type="button" 
+                              onClick={() => removeInterest(interest)}
+                              className="ml-1.5 text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <Input 
+                            placeholder="Add an interest..."
+                            value={newInterest}
+                            onChange={(e) => setNewInterest(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && newInterest) {
+                                e.preventDefault();
+                                addInterest(newInterest);
+                              }
+                            }}
+                          />
+                        </div>
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" type="button">
+                              <ChevronDown className="h-4 w-4 mr-2" />
+                              Select
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-[200px] max-h-[300px] overflow-y-auto">
+                            {commonInterests.map((interest, idx) => (
+                              <DropdownMenuItem 
+                                key={idx} 
+                                onClick={() => addInterest(interest)}
+                                disabled={selectedInterests.includes(interest)}
+                                className={selectedInterests.includes(interest) ? "opacity-50" : ""}
+                              >
+                                {interest}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon"
+                          onClick={() => addInterest(newInterest)}
+                          disabled={!newInterest}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <input type="hidden" {...field} />
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
