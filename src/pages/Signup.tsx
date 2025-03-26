@@ -49,7 +49,8 @@ const Signup = () => {
           title: "Account created successfully",
           description: "Welcome to Husky Match!",
         });
-        navigate('/home');
+        // Redirect to profile setup page instead of home
+        navigate('/profile-setup');
       }, 1000);
     } catch (error) {
       setIsLoading(false);
