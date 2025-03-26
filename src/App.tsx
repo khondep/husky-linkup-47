@@ -16,6 +16,9 @@ import Explore from "./pages/Explore";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +30,9 @@ const AppRoutes = () => {
       <TutorialStep />
       <AnimatedTransition key={location.pathname}>
         <Routes location={location}>
-          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/profile" element={<Profile />} />
