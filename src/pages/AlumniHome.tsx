@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -52,7 +51,7 @@ const messages = [
     id: '1',
     name: 'Daniel Lee',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=60',
-    lastMessage: 'Thank you for the advice on my resume. I've implemented your suggestions.',
+    lastMessage: "Thank you for the advice on my resume. I've implemented your suggestions.",
     time: '2h ago',
     unread: true
   },
